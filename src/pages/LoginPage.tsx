@@ -8,7 +8,7 @@ import {
   Typography,
 } from "@mui/material";
 import { useState } from "react";
-import { login } from "../shared/services/users-service";
+import { login } from "../shared/services/users.service";
 import { AuthError } from "../shared/types/user";
 import { useNavigate } from "react-router-dom";
 import { setLocalToken } from "../shared/helper";

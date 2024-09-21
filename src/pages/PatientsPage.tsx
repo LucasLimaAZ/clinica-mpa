@@ -1,96 +1,73 @@
 import {
+  Alert,
   Box,
   Button,
+  CircularProgress,
   Divider,
   Paper,
   TextField,
   Typography,
 } from "@mui/material";
-import { DataGrid, GridColDef } from "@mui/x-data-grid";
+import { DataGrid, GridColDef, GridRowParams } from "@mui/x-data-grid";
 import { useNavigate } from "react-router-dom";
+import { Patient } from "../shared/types/patient";
+import { useEffect, useState } from "react";
+import { getPatients } from "../shared/services/patients.service";
 
-const columns: GridColDef<(typeof rows)[number]>[] = [
-  { field: "id", headerName: "ID", width: 90 },
+const columns: GridColDef<Patient[][number]>[] = [
+  { field: "id", headerName: "ID", width: 50 },
   {
-    field: "nomeCompleto",
+    field: "full_name",
     headerName: "Nome completo ",
     width: 250,
-    editable: true,
   },
   {
-    field: "endereco",
+    field: "address",
     headerName: "Endereço",
     width: 250,
-    editable: true,
   },
   {
-    field: "idade",
-    headerName: "Idade",
-    type: "number",
-    width: 110,
-    editable: true,
-  },
-];
-
-const rows = [
-  {
-    id: 1,
-    nomeCompleto: "Snow da Silva",
-    endereco: "Rua das quebradas, 123",
-    idade: 14,
+    field: "mobile_phone",
+    headerName: "Celular",
+    width: 150,
   },
   {
-    id: 2,
-    nomeCompleto: "Lannister Pereira Neves",
-    endereco: "Algum lugar no mundo. Ap - 02",
-    idade: 31,
+    field: "genre",
+    headerName: "Gênero",
+    width: 70,
   },
   {
-    id: 3,
-    nomeCompleto: "Lannister Albuquerque Matos",
-    endereco: "Avenidas das industrias, 404",
-    idade: 31,
-  },
-  {
-    id: 4,
-    nomeCompleto: "Stark da Silva Sauro",
-    endereco: "Rua sem fim, 779",
-    idade: 11,
-  },
-  {
-    id: 5,
-    nomeCompleto: "Targaryen Machado Teixeira",
-    endereco: "Rua das quebradas, 123",
-    idade: 27,
-  },
-  {
-    id: 6,
-    nomeCompleto: "Melisandre Nunes",
-    endereco: "Algum lugar no mundo. Ap - 02",
-    idade: 92,
-  },
-  {
-    id: 7,
-    nomeCompleto: "Clifford Soares Flores",
-    endereco: "Avenidas das industrias, 404",
-    idade: 44,
-  },
-  {
-    id: 8,
-    nomeCompleto: "Frances Medeiros Barros",
-    endereco: "Rua sem fim, 779",
-    idade: 36,
-  },
-  {
-    id: 9,
-    nomeCompleto: "Roxie Castro Cabral",
-    endereco: "Rua dos bobos, 0",
-    idade: 65,
+    field: "observations",
+    headerName: "Observações",
+    width: 350,
   },
 ];
 
 const PatientsPage = () => {
+  const [patients, setPatients] = useState<Patient[]>();
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(false);
+  const [searchTerm, setSearchTerm] = useState<string>("");
+
   const navigate = useNavigate();
+
+  useEffect(() => {
+    getPatients()
+      .then((res) => setPatients(res))
+      .catch((err) => setError(err))
+      .finally(() => setLoading(false));
+  }, []);
+
+  const handleRowClick = (params: GridRowParams<Patient>) => {
+    const patientId = params.row.id;
+    sessionStorage.setItem("patient", JSON.stringify(params.row));
+    navigate(`/novo-paciente?id=${patientId}`);
+  };
+
+  const filteredPatients = patients?.filter((patient) =>
+    patient.full_name.toLowerCase().includes(searchTerm.toLowerCase())
+  );
+
   return (
     <Paper>
       <Box sx={{ padding: "2%" }}>
@@ -108,6 +85,8 @@ const PatientsPage = () => {
           placeholder="Digite aqui o nome do paciente..."
           size="small"
           sx={{ width: "40%" }}
+          value={searchTerm}
+          onChange={(e) => setSearchTerm(e.target.value)}
         />
         <Button
           onClick={() => navigate("/novo-paciente")}
@@ -118,19 +97,34 @@ const PatientsPage = () => {
         </Button>
       </Box>
       <Box sx={{ height: 400, padding: "2%" }}>
-        <DataGrid
-          rows={rows}
-          columns={columns}
-          initialState={{
-            pagination: {
-              paginationModel: {
-                pageSize: 5,
+        {loading && <CircularProgress />}
+        {error && (
+          <Alert severity="error">Erro ao buscar pacientes: {error}</Alert>
+        )}
+        {patients && patients.length > 0 && (
+          <DataGrid
+            rows={filteredPatients}
+            columns={columns}
+            initialState={{
+              pagination: {
+                paginationModel: {
+                  pageSize: 5,
+                },
               },
-            },
-          }}
-          pageSizeOptions={[5]}
-          disableRowSelectionOnClick
-        />
+            }}
+            pageSizeOptions={[5]}
+            disableRowSelectionOnClick
+            onRowClick={handleRowClick}
+            sx={{
+              "& .MuiDataGrid-row": {
+                cursor: "pointer",
+              },
+            }}
+          />
+        )}
+        {patients && patients.length === 0 && (
+          <Typography>Nenhum paciente cadastrado.</Typography>
+        )}
       </Box>
     </Paper>
   );
