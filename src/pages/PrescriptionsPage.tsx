@@ -107,7 +107,7 @@ const PrescriptionsPage = () => {
           <Typography variant="h4">Receitas</Typography>
         </Box>
         <Divider />
-        <Box sx={{ height: 400, padding: "2%" }}>
+        <Box sx={{ padding: "2%" }}>
           <DataGrid
             rows={rows}
             columns={columns}

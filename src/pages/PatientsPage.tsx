@@ -96,7 +96,7 @@ const PatientsPage = () => {
           Adicionar Paciente
         </Button>
       </Box>
-      <Box sx={{ height: 400, padding: "2%" }}>
+      <Box sx={{ padding: "2%" }}>
         {loading && <CircularProgress />}
         {error && (
           <Alert severity="error">Erro ao buscar pacientes: {error}</Alert>

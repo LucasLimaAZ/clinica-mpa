@@ -324,7 +324,7 @@ const NewPatientPage = () => {
           {error && (
             <Box sx={{ paddingBottom: "32px", paddingX: "4%" }}>
               <Alert severity="error">
-                Erro ao {edit ? "atualizar" : "cadastrar"} paciente: {error}
+                Erro ao {edit ? "atualizar" : "cadastrar"} paciente.
               </Alert>
             </Box>
           )}

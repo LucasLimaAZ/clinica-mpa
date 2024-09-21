@@ -1,6 +1,6 @@
 import { AxiosError } from "axios";
 import { getLocalToken } from "../helper";
-import { Patient } from "../types/patient";
+import { Medication } from "../types/medication";
 import api from "./http-client";
 
 const handleUnauthorizedError = (error: AxiosError) => {
@@ -14,35 +14,35 @@ const handleUnauthorizedError = (error: AxiosError) => {
   }
 };
 
-export const createPatient = async (patientData: Patient) => {
+export const createMedication = async (medicationData: Medication) => {
   const token = getLocalToken();
   const headers = {
     Authorization: `Bearer ${token}`,
   };
 
   try {
-    const response = await api.post("/patient", patientData, { headers });
+    const response = await api.post("/medication", medicationData, { headers });
     return response.data;
   } catch (error) {
     handleUnauthorizedError(error as AxiosError);
   }
 };
 
-export const getPatients = async () => {
+export const getMedications = async () => {
   const token = getLocalToken();
   const headers = {
     Authorization: `Bearer ${token}`,
   };
 
   try {
-    const response = await api.get("/patient", { headers });
+    const response = await api.get("/medication", { headers });
     return response.data;
   } catch (error) {
     handleUnauthorizedError(error as AxiosError);
   }
 };
 
-export const updatePatient = async (patientData: Patient) => {
+export const updateMedication = async (medicationData: Medication) => {
   const token = getLocalToken();
   const headers = {
     Authorization: `Bearer ${token}`,
@@ -50,8 +50,8 @@ export const updatePatient = async (patientData: Patient) => {
 
   try {
     const response = await api.patch(
-      `/patient/${patientData.id}`,
-      patientData,
+      `/medication/${medicationData.id}`,
+      medicationData,
       { headers }
     );
     return response.data;
@@ -60,14 +60,14 @@ export const updatePatient = async (patientData: Patient) => {
   }
 };
 
-export const deletePatient = async (patientData: Patient) => {
+export const deleteMedication = async (medicationId: string | number) => {
   const token = getLocalToken();
   const headers = {
     Authorization: `Bearer ${token}`,
   };
 
   try {
-    const response = await api.delete(`/patient/${patientData.id}`, {
+    const response = await api.delete(`/medication/${medicationId}`, {
       headers,
     });
     return response.data;
