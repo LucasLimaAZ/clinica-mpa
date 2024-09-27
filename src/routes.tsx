@@ -4,11 +4,11 @@ import ProtectedRoute from "./protected-route";
 import NewPatientPage from "./pages/NewPatientPage";
 import PatientsPage from "./pages/PatientsPage";
 import PrescriptionsPage from "./pages/PrescriptionsPage";
-import { createBrowserRouter } from "react-router-dom";
+import { createMemoryRouter } from "react-router-dom";
 import MessagesPage from "./pages/MessagesPage";
 import MedicationsPage from "./pages/MedicationsPage";
 
-export const router = createBrowserRouter([
+export const router = createMemoryRouter([
   {
     path: "/",
     element: (
