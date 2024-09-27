@@ -83,7 +83,7 @@ const MedicationsPage = () => {
   };
 
   const handleSubmit = () => {
-    if (medication) {
+    if (medication && medication.name) {
       setLoading(true);
       createMedication(medication)
         .then(() => setSuccess(true))

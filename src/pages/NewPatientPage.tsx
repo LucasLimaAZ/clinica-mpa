@@ -52,7 +52,7 @@ const NewPatientPage = () => {
   };
 
   const handleSubmit = () => {
-    if (patient) {
+    if (patient && patient.full_name) {
       setLoading(true);
 
       if (edit) {

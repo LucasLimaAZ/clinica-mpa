@@ -52,7 +52,7 @@ const LoginPage = () => {
         display: "flex",
         justifyContent: "center",
         width: "100%",
-        backgroundColor: "rgb(250, 250, 250)",
+        backgroundColor: "rgb(245, 245, 245)",
       }}
     >
       <Paper

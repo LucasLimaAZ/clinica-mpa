@@ -1,104 +1,134 @@
 import {
+  Alert,
   Autocomplete,
   Box,
   Button,
+  CircularProgress,
   Divider,
   Paper,
+  SelectChangeEvent,
   TextField,
   Typography,
 } from "@mui/material";
-import { DataGrid, GridColDef } from "@mui/x-data-grid";
-
-const columns: GridColDef<(typeof rows)[number]>[] = [
-  {
-    field: "data",
-    headerName: "Data",
-    width: 100,
-  },
-  {
-    field: "paciente",
-    headerName: "Paciente",
-    width: 250,
-  },
-  {
-    field: "telefone",
-    headerName: "Telefone",
-    width: 150,
-  },
-  {
-    field: "recado",
-    headerName: "Recado",
-    width: 500,
-  },
-];
-
-const rows = [
-  {
-    id: 1,
-    data: "09/12/2024",
-    paciente: "João Silva",
-    telefone: "(11) 98765-4321",
-    recado: "Favor retornar ligação sobre resultados do exame.",
-  },
-  {
-    id: 2,
-    data: "09/12/2024",
-    paciente: "Maria Souza",
-    telefone: "(21) 91234-5678",
-    recado: "Confirmar consulta para a próxima semana.",
-  },
-  {
-    id: 3,
-    data: "09/12/2024",
-    paciente: "Carlos Pereira",
-    telefone: "(31) 99876-5432",
-    recado: "Remarcar consulta para outro dia.",
-  },
-  {
-    id: 4,
-    data: "09/12/2024",
-    paciente: "Ana Costa",
-    telefone: "(41) 98765-1234",
-    recado: "Favor confirmar horário de atendimento.",
-  },
-  {
-    id: 5,
-    data: "09/12/2024",
-    paciente: "Pedro Gomes",
-    telefone: "(51) 91234-6789",
-    recado: "Solicitar nova receita para medicamento.",
-  },
-  {
-    id: 6,
-    data: "09/11/2024",
-    paciente: "Fernanda Oliveira",
-    telefone: "(61) 98765-4321",
-    recado: "Paciente precisa reagendar exame.",
-  },
-  {
-    id: 7,
-    data: "09/10/2024",
-    paciente: "Paulo Mendes",
-    telefone: "(71) 99876-5432",
-    recado: "Favor enviar relatórios médicos por e-mail.",
-  },
-  {
-    id: 8,
-    data: "09/09/2024",
-    paciente: "Juliana Ferreira",
-    telefone: "(81) 91234-5678",
-    recado: "Confirmar entrega de exames no consultório.",
-  },
-  {
-    id: 9,
-    data: "09/08/2024",
-    paciente: "Marcos Lima",
-    telefone: "(91) 98765-4321",
-    recado: "Confirmar horário de cirurgia para próxima semana.",
-  },
-];
+import { DataGrid, GridActionsCellItem, GridColDef } from "@mui/x-data-grid";
+import { Message } from "../shared/types/message";
+import { useEffect, useState } from "react";
+import {
+  createMessage,
+  deleteMessage,
+  getMessages,
+} from "../shared/services/messages.service";
+import { Delete } from "@mui/icons-material";
 
 const MessagesPage = () => {
+  const columns: GridColDef<Message[][number]>[] = [
+    {
+      field: "date",
+      headerName: "Data",
+      width: 250,
+    },
+    {
+      field: "patient_id",
+      headerName: "Paciente",
+      width: 250,
+    },
+    {
+      field: "message",
+      headerName: "Recado",
+      width: 350,
+    },
+    {
+      field: "actions",
+      headerName: "Excluir",
+      type: "actions",
+      width: 150,
+      getActions: (params) => [
+        <GridActionsCellItem
+          icon={<Delete color="error" />}
+          label="Excluir"
+          onClick={() => handleDelete(params.id)}
+        />,
+      ],
+    },
+  ];
+
+  const [messages, setMessages] = useState<Message[]>();
+  const [loading, setLoading] = useState(false);
+  const [listLoading, setListLoading] = useState(true);
+  const [error, setError] = useState(false);
+  const [success, setSuccess] = useState(false);
+  const [searchTerm, setSearchTerm] = useState<string>("");
+  const [message, setMessage] = useState<Message>();
+
+  const filteredMessages = messages?.filter((message) =>
+    message.patient_id
+      .toString()
+      .toLowerCase()
+      .includes(searchTerm.toLowerCase())
+  );
+
+  useEffect(() => {
+    fetchMessages();
+  }, []);
+
+  const fetchMessages = () => {
+    setListLoading(true);
+    getMessages()
+      .then((res) => setMessages(res))
+      .catch((err) => setError(err))
+      .finally(() => setListLoading(false));
+  };
+
+  const handleInputChange = (
+    e:
+      | React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+      | SelectChangeEvent<string>
+  ) => {
+    setMessage({
+      ...message,
+      [e.target.name]: e.target.value,
+    } as Message);
+  };
+
+  const handleAutocompleteChange = (
+    _: React.SyntheticEvent<Element, Event>,
+    option: { label: string; value: number } | null
+  ) => {
+    if (option) {
+      setMessage({
+        ...message,
+        patient_id: option.value,
+      } as Message);
+    }
+  };
+
+  const handleSubmit = () => {
+    if (message && message.message) {
+      setLoading(true);
+      createMessage(message)
+        .then(() => setSuccess(true))
+        .catch((err) => setError(err))
+        .finally(() => {
+          setLoading(false);
+          fetchMessages();
+          setTimeout(() => {
+            setError(false);
+            setSuccess(false);
+          }, 2000);
+        });
+    }
+  };
+
+  const handleDelete = (id: number | string) => {
+    setListLoading(true);
+    deleteMessage(id)
+      .catch((err) => setError(err))
+      .finally(() => {
+        setListLoading(false);
+        fetchMessages();
+      });
+  };
+
   return (
     <Box display="flex" justifyContent="space-between" gap="16px">
       <Paper sx={{ width: "70%" }}>
@@ -107,19 +137,36 @@ const MessagesPage = () => {
         </Box>
         <Divider />
         <Box sx={{ padding: "2%" }}>
-          <DataGrid
-            rows={rows}
-            columns={columns}
-            initialState={{
-              pagination: {
-                paginationModel: {
-                  pageSize: 5,
-                },
-              },
-            }}
-            pageSizeOptions={[5]}
-            disableRowSelectionOnClick
+          <TextField
+            variant="standard"
+            label="Pesquisar"
+            placeholder="Digite aqui o nome do paciente..."
+            size="small"
+            fullWidth
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            sx={{ marginBottom: "32px" }}
           />
+          {listLoading && (
+            <Box sx={{ padding: "4%" }}>
+              <CircularProgress />
+            </Box>
+          )}
+          {!listLoading && filteredMessages && filteredMessages.length > 0 && (
+            <DataGrid
+              rows={filteredMessages}
+              columns={columns}
+              initialState={{
+                pagination: {
+                  paginationModel: {
+                    pageSize: 5,
+                  },
+                },
+              }}
+              pageSizeOptions={[5]}
+              disableRowSelectionOnClick
+            />
+          )}
         </Box>
       </Paper>
       <Paper sx={{ width: "30%" }}>
@@ -131,38 +178,57 @@ const MessagesPage = () => {
           <Autocomplete
             disablePortal
             options={[
-              { label: "João da Silva" },
-              { label: "Augusto Pereira" },
-              { label: "César Mello" },
+              { label: "João da Silva", value: 1 },
+              { label: "Augusto Pereira", value: 2 },
+              { label: "César Mello", value: 3 },
             ]}
             sx={{ marginBottom: "16px" }}
+            onChange={handleAutocompleteChange}
             renderInput={(params) => (
               <TextField variant="standard" {...params} label="Paciente" />
             )}
           />
           <TextField
-            variant="standard"
-            sx={{ marginBottom: "16px" }}
-            fullWidth
-            label="Telefone"
-          />
-          <TextField
+            onChange={handleInputChange}
             variant="standard"
             sx={{ marginBottom: "16px" }}
             fullWidth
             label="Data"
             type="date"
             slotProps={{ inputLabel: { shrink: true } }}
+            name="date"
           />
           <TextField
+            onChange={handleInputChange}
             variant="standard"
             sx={{ marginBottom: "16px" }}
             fullWidth
             label="Recado"
+            name="message"
           />
-          <Button sx={{ marginTop: "32px" }} fullWidth variant="contained">
+          {loading && (
+            <Box sx={{ padding: "4%" }}>
+              <CircularProgress />
+            </Box>
+          )}
+          <Button
+            onClick={handleSubmit}
+            sx={{ marginTop: "32px" }}
+            fullWidth
+            variant="contained"
+          >
             Adicionar
           </Button>
+          {error && (
+            <Box sx={{ paddingY: "32px" }}>
+              <Alert severity="error">Erro ao cadastrar recado.</Alert>
+            </Box>
+          )}
+          {success && (
+            <Box sx={{ paddingY: "32px" }}>
+              <Alert severity="success">Recado cadastrado com sucesso!</Alert>
+            </Box>
+          )}
         </Box>
       </Paper>
     </Box>

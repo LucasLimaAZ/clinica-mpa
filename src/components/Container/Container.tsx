@@ -4,7 +4,7 @@ const Container: React.FC<{ children: React.ReactElement }> = ({
   children,
 }) => {
   return (
-    <Box sx={{ backgroundColor: "rgb(250, 250, 250)" }}>
+    <Box sx={{ backgroundColor: "rgb(245, 245, 245)" }}>
       <SideDrawer />
       <Box sx={{ padding: "5%" }}>{children}</Box>
     </Box>

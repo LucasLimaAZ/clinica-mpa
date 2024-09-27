@@ -1,105 +1,158 @@
 import {
+  Alert,
   Autocomplete,
   Box,
   Button,
+  CircularProgress,
   Divider,
   Paper,
+  SelectChangeEvent,
   TextField,
   Typography,
 } from "@mui/material";
-import { DataGrid, GridColDef } from "@mui/x-data-grid";
-
-const columns: GridColDef<(typeof rows)[number]>[] = [
-  { field: "id", headerName: "Número", width: 100 },
-  {
-    field: "data",
-    headerName: "Data",
-    width: 100,
-  },
-  {
-    field: "remedio",
-    headerName: "Remédio",
-    width: 250,
-  },
-  {
-    field: "quantidade",
-    headerName: "Quantidade",
-    width: 150,
-  },
-  {
-    field: "uso",
-    headerName: "Modo de uso",
-    width: 250,
-  },
-];
-
-const rows = [
-  {
-    id: 1,
-    data: "09/12/2024",
-    remedio: "Paracetamol",
-    quantidade: "2 caixas",
-    uso: "1 comprimido a cada 8 horas",
-  },
-  {
-    id: 2,
-    data: "09/12/2024",
-    remedio: "Ibuprofeno",
-    quantidade: "2 caixas",
-    uso: "1 comprimido a cada 6 horas",
-  },
-  {
-    id: 3,
-    data: "09/12/2024",
-    remedio: "Amoxicilina",
-    quantidade: "2 caixas",
-    uso: "1 cápsula a cada 12 horas",
-  },
-  {
-    id: 4,
-    data: "09/12/2024",
-    remedio: "Dipirona",
-    quantidade: "2 caixas",
-    uso: "1 comprimido a cada 6 horas",
-  },
-  {
-    id: 5,
-    data: "09/12/2024",
-    remedio: "Cetirizina",
-    quantidade: "2 caixas",
-    uso: "1 comprimido por dia",
-  },
-  {
-    id: 6,
-    data: "09/11/2024",
-    remedio: "Cloridrato de Metformina",
-    quantidade: "2 caixas",
-    uso: "1 comprimido a cada 12 horas",
-  },
-  {
-    id: 7,
-    data: "09/10/2024",
-    remedio: "Aspirina",
-    quantidade: "2 caixas",
-    uso: "1 comprimido ao dia",
-  },
-  {
-    id: 8,
-    data: "09/09/2024",
-    remedio: "Omeprazol",
-    quantidade: "2 caixas",
-    uso: "1 cápsula por dia",
-  },
-  {
-    id: 9,
-    data: "09/08/2024",
-    remedio: "Losartana",
-    quantidade: "2 caixas",
-    uso: "1 comprimido ao dia",
-  },
-];
+import { DataGrid, GridActionsCellItem, GridColDef } from "@mui/x-data-grid";
+import { Prescription } from "../shared/types/prescription";
+import { Delete, Print } from "@mui/icons-material";
+import {
+  createPrescription,
+  deletePrescription,
+  getPrescriptions,
+} from "../shared/services/prescriptions.service";
+import { useEffect, useState } from "react";
 
 const PrescriptionsPage = () => {
+  const columns: GridColDef<Prescription[][number]>[] = [
+    { field: "id", headerName: "Número", width: 75 },
+    {
+      field: "date",
+      headerName: "Data",
+      width: 100,
+    },
+    {
+      field: "medication",
+      headerName: "Remédio",
+      width: 200,
+    },
+    {
+      field: "amount",
+      headerName: "Quantidade",
+      width: 150,
+    },
+    {
+      field: "how_to_use",
+      headerName: "Modo de uso",
+      width: 150,
+    },
+    {
+      field: "patient_id",
+      headerName: "Paciente",
+      width: 100,
+    },
+    {
+      field: "delete",
+      headerName: "Excluir",
+      type: "actions",
+      width: 100,
+      getActions: (params) => [
+        <GridActionsCellItem
+          icon={<Delete color="error" />}
+          label="Excluir"
+          onClick={() => handleDelete(params.id)}
+        />,
+      ],
+    },
+    {
+      field: "print",
+      headerName: "Imprimir",
+      type: "actions",
+      width: 100,
+      getActions: () => [
+        <GridActionsCellItem
+          icon={<Print color="primary" />}
+          label="Imprimir"
+          onClick={() => alert("Em breve")}
+        />,
+      ],
+    },
+  ];
+
+  const [prescriptions, setPrescriptions] = useState<Prescription[]>();
+  const [loading, setLoading] = useState(false);
+  const [listLoading, setListLoading] = useState(true);
+  const [error, setError] = useState(false);
+  const [success, setSuccess] = useState(false);
+  const [searchTerm, setSearchTerm] = useState<string>("");
+  const [prescription, setPrescription] = useState<Prescription>();
+
+  useEffect(() => {
+    fetchPrescriptions();
+  }, []);
+
+  const filteredPrescriptions = prescriptions?.filter((prescription) =>
+    prescription.patient_id
+      .toString()
+      .toLowerCase()
+      .includes(searchTerm.toLowerCase())
+  );
+
+  const handleInputChange = (
+    e:
+      | React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+      | SelectChangeEvent<string>
+  ) => {
+    setPrescription({
+      ...prescription,
+      [e.target.name]: e.target.value,
+    } as Prescription);
+  };
+
+  const handleAutocompleteChange = (
+    _: React.SyntheticEvent<Element, Event>,
+    option: { label: string; value: number } | null
+  ) => {
+    if (option) {
+      setPrescription({
+        ...prescription,
+        patient_id: option.value,
+      } as Prescription);
+    }
+  };
+
+  const fetchPrescriptions = () => {
+    setListLoading(true);
+    getPrescriptions()
+      .then((res) => setPrescriptions(res))
+      .catch((err) => setError(err))
+      .finally(() => setListLoading(false));
+  };
+
+  const handleDelete = (id: number | string) => {
+    setListLoading(true);
+    deletePrescription(id)
+      .catch((err) => setError(err))
+      .finally(() => {
+        setListLoading(false);
+        fetchPrescriptions();
+      });
+  };
+
+  const handleSubmit = () => {
+    if (prescription && prescription.medication && prescription.patient_id) {
+      setLoading(true);
+      createPrescription(prescription)
+        .then(() => setSuccess(true))
+        .catch((err) => setError(err))
+        .finally(() => {
+          setLoading(false);
+          fetchPrescriptions();
+          setTimeout(() => {
+            setError(false);
+            setSuccess(false);
+          }, 2000);
+        });
+    }
+  };
+
   return (
     <Box display="flex" justifyContent="space-between" gap="16px">
       <Paper sx={{ width: "70%" }}>
@@ -108,19 +161,38 @@ const PrescriptionsPage = () => {
         </Box>
         <Divider />
         <Box sx={{ padding: "2%" }}>
-          <DataGrid
-            rows={rows}
-            columns={columns}
-            initialState={{
-              pagination: {
-                paginationModel: {
-                  pageSize: 5,
-                },
-              },
-            }}
-            pageSizeOptions={[5]}
-            disableRowSelectionOnClick
+          <TextField
+            variant="standard"
+            label="Pesquisar"
+            placeholder="Digite aqui o nome do paciente..."
+            size="small"
+            fullWidth
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            sx={{ marginBottom: "32px" }}
           />
+          {listLoading && (
+            <Box sx={{ padding: "4%" }}>
+              <CircularProgress />
+            </Box>
+          )}
+          {!listLoading &&
+            filteredPrescriptions &&
+            filteredPrescriptions.length > 0 && (
+              <DataGrid
+                rows={filteredPrescriptions}
+                columns={columns}
+                initialState={{
+                  pagination: {
+                    paginationModel: {
+                      pageSize: 5,
+                    },
+                  },
+                }}
+                pageSizeOptions={[5]}
+                disableRowSelectionOnClick
+              />
+            )}
         </Box>
       </Paper>
       <Paper sx={{ width: "30%" }}>
@@ -132,44 +204,73 @@ const PrescriptionsPage = () => {
           <Autocomplete
             disablePortal
             options={[
-              { label: "João da Silva" },
-              { label: "Augusto Pereira" },
-              { label: "César Mello" },
+              { label: "João da Silva", value: 1 },
+              { label: "Augusto Pereira", value: 2 },
+              { label: "César Mello", value: 3 },
             ]}
+            onChange={handleAutocompleteChange}
             sx={{ marginBottom: "16px" }}
             renderInput={(params) => (
               <TextField variant="standard" {...params} label="Paciente" />
             )}
           />
           <TextField
+            onChange={handleInputChange}
             variant="standard"
             sx={{ marginBottom: "16px" }}
             fullWidth
             label="Remédio"
+            name="medication"
           />
           <TextField
+            onChange={handleInputChange}
             variant="standard"
             sx={{ marginBottom: "16px" }}
             fullWidth
             label="Data"
             type="date"
+            name="date"
             slotProps={{ inputLabel: { shrink: true } }}
           />
           <TextField
+            onChange={handleInputChange}
             variant="standard"
             sx={{ marginBottom: "16px" }}
             fullWidth
             label="Quantidade"
+            name="amount"
           />
           <TextField
+            onChange={handleInputChange}
             variant="standard"
             sx={{ marginBottom: "16px" }}
             fullWidth
             label="Modo de uso"
+            name="how_to_use"
           />
-          <Button sx={{ marginTop: "32px" }} fullWidth variant="contained">
+          {loading && (
+            <Box sx={{ padding: "4%" }}>
+              <CircularProgress />
+            </Box>
+          )}
+          <Button
+            onClick={handleSubmit}
+            sx={{ marginTop: "32px" }}
+            fullWidth
+            variant="contained"
+          >
             Adicionar
           </Button>
+          {error && (
+            <Box sx={{ paddingY: "32px" }}>
+              <Alert severity="error">Erro ao cadastrar receita.</Alert>
+            </Box>
+          )}
+          {success && (
+            <Box sx={{ paddingY: "32px" }}>
+              <Alert severity="success">Receita cadastrada com sucesso!</Alert>
+            </Box>
+          )}
         </Box>
       </Paper>
     </Box>
