@@ -18,6 +18,7 @@ export const createPatient = async (patientData: Patient) => {
   const token = getLocalToken();
   const headers = {
     Authorization: `Bearer ${token}`,
+    Accept: "application/json",
   };
 
   try {
@@ -32,6 +33,7 @@ export const getPatients = async () => {
   const token = getLocalToken();
   const headers = {
     Authorization: `Bearer ${token}`,
+    Accept: "application/json",
   };
 
   try {
@@ -46,6 +48,7 @@ export const updatePatient = async (patientData: Patient) => {
   const token = getLocalToken();
   const headers = {
     Authorization: `Bearer ${token}`,
+    Accept: "application/json",
   };
 
   try {
@@ -64,6 +67,7 @@ export const deletePatient = async (patientData: Patient) => {
   const token = getLocalToken();
   const headers = {
     Authorization: `Bearer ${token}`,
+    Accept: "application/json",
   };
 
   try {

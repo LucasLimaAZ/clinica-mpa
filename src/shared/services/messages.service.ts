@@ -18,6 +18,7 @@ export const createMessage = async (messageData: Message) => {
   const token = getLocalToken();
   const headers = {
     Authorization: `Bearer ${token}`,
+    Accept: "application/json",
   };
 
   try {
@@ -32,6 +33,7 @@ export const getMessages = async () => {
   const token = getLocalToken();
   const headers = {
     Authorization: `Bearer ${token}`,
+    Accept: "application/json",
   };
 
   try {
@@ -46,6 +48,7 @@ export const updateMessage = async (messageData: Message) => {
   const token = getLocalToken();
   const headers = {
     Authorization: `Bearer ${token}`,
+    Accept: "application/json",
   };
 
   try {
@@ -64,6 +67,7 @@ export const deleteMessage = async (messageId: string | number) => {
   const token = getLocalToken();
   const headers = {
     Authorization: `Bearer ${token}`,
+    Accept: "application/json",
   };
 
   try {

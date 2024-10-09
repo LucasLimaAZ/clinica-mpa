@@ -27,21 +27,9 @@ export const createUser = async (userData: User) => {
 export const login = async (email: string, password: string) => {
   try {
     const response = await api.post("/login", { email, password });
-    localStorage.setItem("clinica-api-token", response.data.token);
     return response.data;
   } catch (error) {
     console.error("Não foi possível logar o usuário:", error);
     throw error;
   }
-};
-
-export const isAuthenticated = () => {
-  const token = localStorage.getItem("clinica-api-token");
-  if (!token) return false;
-  getUserInfo(token)
-    .then(() => true)
-    .catch((err) => {
-      console.error(err);
-      return false;
-    });
 };

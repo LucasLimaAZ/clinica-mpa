@@ -18,6 +18,7 @@ export const createPrescription = async (prescriptionData: Prescription) => {
   const token = getLocalToken();
   const headers = {
     Authorization: `Bearer ${token}`,
+    Accept: "application/json",
   };
 
   try {
@@ -34,6 +35,7 @@ export const getPrescriptions = async () => {
   const token = getLocalToken();
   const headers = {
     Authorization: `Bearer ${token}`,
+    Accept: "application/json",
   };
 
   try {
@@ -48,6 +50,7 @@ export const updatePrescription = async (prescriptionData: Prescription) => {
   const token = getLocalToken();
   const headers = {
     Authorization: `Bearer ${token}`,
+    Accept: "application/json",
   };
 
   try {
@@ -66,6 +69,7 @@ export const deletePrescription = async (prescriptionId: string | number) => {
   const token = getLocalToken();
   const headers = {
     Authorization: `Bearer ${token}`,
+    Accept: "application/json",
   };
 
   try {

@@ -15,10 +15,10 @@ export const getLocalToken = () => {
 export const checkAuthorization = () => {
   const auth = JSON.parse(sessionStorage.getItem("authorization") as string);
   if (!auth) return false;
-  const sessionStarted = new Date(auth.date);
-  const currntTime = new Date();
-  const hours = diffHours(sessionStarted, currntTime);
-  return auth.token && hours < 24;
+  // const sessionStarted = new Date(auth.date);
+  // const currntTime = new Date();
+  // const hours = diffHours(sessionStarted, currntTime);
+  return auth.token; // removed && hours < 24 because of server date/time
 };
 
 export const diffHours = (dt2: Date, dt1: Date) => {
