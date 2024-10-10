@@ -19,6 +19,10 @@ import {
   getPrescriptions,
 } from "../shared/services/prescriptions.service";
 import { useEffect, useState } from "react";
+import Modal from "../components/Modal/Modal";
+import PrescriptionPdf from "../components/PrescriptionPdf/PrescriptionPdf";
+import { Patient } from "../shared/types/patient";
+import { getPatients } from "../shared/services/patients.service";
 
 const PrescriptionsPage = () => {
   const columns: GridColDef<Prescription[][number]>[] = [
@@ -44,9 +48,10 @@ const PrescriptionsPage = () => {
       width: 150,
     },
     {
-      field: "patient_id",
+      field: "patient_fullname",
       headerName: "Paciente",
       width: 100,
+      valueGetter: (_, row) => row.patient.full_name,
     },
     {
       field: "delete",
@@ -66,11 +71,11 @@ const PrescriptionsPage = () => {
       headerName: "Imprimir",
       type: "actions",
       width: 100,
-      getActions: () => [
+      getActions: (params) => [
         <GridActionsCellItem
           icon={<Print color="primary" />}
           label="Imprimir"
-          onClick={() => alert("Em breve")}
+          onClick={() => handlePrescriptionModal(params.row)}
         />,
       ],
     },
@@ -83,9 +88,20 @@ const PrescriptionsPage = () => {
   const [success, setSuccess] = useState(false);
   const [searchTerm, setSearchTerm] = useState<string>("");
   const [prescription, setPrescription] = useState<Prescription>();
+  const [currentDate, setCurrentDate] = useState<string>("");
+  const [openPrescriptionModal, setOpenPrescriptionModal] =
+    useState<boolean>(false);
+  const [selectedPrescription, setSelectedPrescription] =
+    useState<Prescription>();
+  const [patients, setPatients] = useState<Patient[]>();
 
   useEffect(() => {
+    fetchPatients();
     fetchPrescriptions();
+
+    const currentDate = new Date().toISOString().split("T")[0];
+    setCurrentDate(currentDate);
+    setPrescription({ date: currentDate } as Prescription);
   }, []);
 
   const filteredPrescriptions = prescriptions?.filter((prescription) =>
@@ -94,6 +110,17 @@ const PrescriptionsPage = () => {
       .toLowerCase()
       .includes(searchTerm.toLowerCase())
   );
+
+  const fetchPatients = () => {
+    getPatients()
+      .then((res) => setPatients(res))
+      .catch((err) => console.error(err));
+  };
+
+  const handlePrescriptionModal = (prescription: Prescription) => {
+    setSelectedPrescription(prescription);
+    setOpenPrescriptionModal(true);
+  };
 
   const handleInputChange = (
     e:
@@ -108,12 +135,12 @@ const PrescriptionsPage = () => {
 
   const handleAutocompleteChange = (
     _: React.SyntheticEvent<Element, Event>,
-    option: { label: string; value: number } | null
+    option: Patient | null
   ) => {
     if (option) {
       setPrescription({
         ...prescription,
-        patient_id: option.value,
+        patient_id: option.id,
       } as Prescription);
     }
   };
@@ -203,11 +230,8 @@ const PrescriptionsPage = () => {
         <Box sx={{ padding: "32px" }}>
           <Autocomplete
             disablePortal
-            options={[
-              { label: "João da Silva", value: 1 },
-              { label: "Augusto Pereira", value: 2 },
-              { label: "César Mello", value: 3 },
-            ]}
+            options={patients || []}
+            getOptionLabel={(option) => option.full_name}
             onChange={handleAutocompleteChange}
             sx={{ marginBottom: "16px" }}
             renderInput={(params) => (
@@ -231,6 +255,7 @@ const PrescriptionsPage = () => {
             type="date"
             name="date"
             slotProps={{ inputLabel: { shrink: true } }}
+            value={prescription?.date || currentDate}
           />
           <TextField
             onChange={handleInputChange}
@@ -273,6 +298,15 @@ const PrescriptionsPage = () => {
           )}
         </Box>
       </Paper>
+      <Modal
+        open={openPrescriptionModal}
+        content={
+          selectedPrescription && <PrescriptionPdf {...selectedPrescription} />
+        }
+        title="Imprimir Receita"
+        onClose={() => setOpenPrescriptionModal(false)}
+        width="600px"
+      />
     </Box>
   );
 };

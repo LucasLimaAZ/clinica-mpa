@@ -14,3 +14,8 @@ export type Patient = {
   neighborhood: string;
   observations: string;
 };
+
+export type Label = {
+  id: number;
+  full_name: string;
+};

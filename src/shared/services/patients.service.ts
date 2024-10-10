@@ -79,3 +79,19 @@ export const deletePatient = async (patientData: Patient) => {
     handleUnauthorizedError(error as AxiosError);
   }
 };
+
+export const getPatientsRange = async (startId: number, endId: number) => {
+  const token = getLocalToken();
+  const headers = {
+    Authorization: `Bearer ${token}`,
+  };
+
+  try {
+    const response = await api.get(`/patients/range/${startId}/${endId}`, {
+      headers,
+    });
+    return response.data;
+  } catch (error) {
+    handleUnauthorizedError(error as AxiosError);
+  }
+};

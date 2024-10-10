@@ -10,7 +10,8 @@ import {
 export interface SimpleDialogProps {
   open: boolean;
   title: string;
-  content?: string;
+  content?: string | JSX.Element;
+  width?: string;
   onConfirm?: () => void;
   onClose: () => void;
 }
@@ -32,7 +33,7 @@ const Modal = (props: SimpleDialogProps) => {
   return (
     <Dialog onClose={handleClose} open={open}>
       <DialogTitle>{title}</DialogTitle>
-      <DialogContent>
+      <DialogContent sx={{ width: props.width || "auto" }}>
         {content && (
           <DialogContentText id="alert-dialog-description">
             {content}
