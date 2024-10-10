@@ -5,6 +5,7 @@ import {
   CardContent,
   CardMedia,
   Paper,
+  Skeleton,
   Typography,
 } from "@mui/material";
 import MedicImg from "../assets/img/home-pic.jpg";
@@ -12,9 +13,30 @@ import NoteImg from "../assets/img/note.jpg";
 import MedicationImg from "../assets/img/medication.jpg";
 import PrescriptionImg from "../assets/img/prescription.jpg";
 import { useNavigate } from "react-router-dom";
+import IssueLabel from "../components/IssueLabel/IssueLabel";
+import { useEffect, useState } from "react";
+import { getCounters } from "../shared/services/home.service";
+
+interface Counters {
+  patients: number;
+  messages: number;
+  prescriptions: number;
+  medications: number;
+}
 
 const HomePage = () => {
   const navigate = useNavigate();
+  const [counters, setCounters] = useState<Counters>();
+  const [countersLoading, setCountersLoading] = useState<boolean>(true);
+
+  useEffect(() => {
+    getCounters()
+      .then((res) => {
+        setCounters(res);
+      })
+      .catch((err) => console.error(err))
+      .finally(() => setCountersLoading(false));
+  }, []);
 
   return (
     <Box>
@@ -35,16 +57,12 @@ const HomePage = () => {
               Você possui
             </Typography>
             <Typography variant="h5" component="div">
-              23
+              {!counters && countersLoading && <Skeleton width="32px" />}
+              {counters?.patients}
             </Typography>
             <Typography sx={{ color: "text.secondary", mb: 1.5 }}>
               Pacientes cadastrados
             </Typography>
-            <Typography variant="body2">
-              well meaning and kindly.
-              <br />
-              {'"a benevolent smile"'}
-            </Typography>
           </CardContent>
         </Card>
         <Card sx={{ width: "100%" }}>
@@ -56,16 +74,12 @@ const HomePage = () => {
               Você possui
             </Typography>
             <Typography variant="h5" component="div">
-              46
+              {!counters && countersLoading && <Skeleton width="32px" />}
+              {counters?.medications}
             </Typography>
             <Typography sx={{ color: "text.secondary", mb: 1.5 }}>
               Remédios cadastrados
             </Typography>
-            <Typography variant="body2">
-              well meaning and kindly.
-              <br />
-              {'"a benevolent smile"'}
-            </Typography>
           </CardContent>
         </Card>
         <Card sx={{ width: "100%" }}>
@@ -77,16 +91,12 @@ const HomePage = () => {
               Você possui
             </Typography>
             <Typography variant="h5" component="div">
-              24
+              {!counters && countersLoading && <Skeleton width="32px" />}
+              {counters?.prescriptions}
             </Typography>
             <Typography sx={{ color: "text.secondary", mb: 1.5 }}>
               Receitas cadastradas
             </Typography>
-            <Typography variant="body2">
-              well meaning and kindly.
-              <br />
-              {'"a benevolent smile"'}
-            </Typography>
           </CardContent>
         </Card>
         <Card sx={{ width: "100%" }}>
@@ -98,15 +108,11 @@ const HomePage = () => {
               Você possui
             </Typography>
             <Typography variant="h5" component="div">
-              55
+              {!counters && countersLoading && <Skeleton width="32px" />}
+              {counters?.messages}
             </Typography>
             <Typography sx={{ color: "text.secondary", mb: 1.5 }}>
               Recados cadastrados
-            </Typography>
-            <Typography variant="body2">
-              well meaning and kindly.
-              <br />
-              {'"a benevolent smile"'}
             </Typography>
           </CardContent>
         </Card>
@@ -114,20 +120,8 @@ const HomePage = () => {
       <Box
         sx={{ display: "flex", justifyContent: "center", marginBottom: "32px" }}
       >
-        <Paper sx={{ padding: "2%" }}>
-          <Typography pb="16px" variant="h3">
-            Clínica M&PA
-          </Typography>
-          <Typography pb="16px" textAlign="justify">
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aliquam
-            vitae urna nunc. Pellentesque habitant morbi tristique senectus et
-            netus et malesuada fames ac turpis egestas. Quisque sed neque eget
-            enim efficitur mollis. Nunc facilisis tempor varius. Curabitur quis
-            suscipit augue.
-          </Typography>
-          <Typography fontWeight="bold">
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-          </Typography>
+        <Paper sx={{ padding: "2%", width: "100%" }}>
+          <IssueLabel />
         </Paper>
       </Box>
       <Box sx={{ display: "flex", justifyContent: "center", gap: "16px" }}>
@@ -144,8 +138,8 @@ const HomePage = () => {
                 Pacientes
               </Typography>
               <Typography variant="body2" sx={{ color: "text.secondary" }}>
-                Lizards are a widespread group of squamate reptiles, with over
-                6,000 species, ranging across all continents except Antarctica
+                Tenha uma visão detalhada dos seus pacientes registrados. Clique
+                aqui e acesse a tela de visualização de pacientes.
               </Typography>
             </CardContent>
           </CardActionArea>
@@ -163,8 +157,8 @@ const HomePage = () => {
                 Remédios
               </Typography>
               <Typography variant="body2" sx={{ color: "text.secondary" }}>
-                Lizards are a widespread group of squamate reptiles, with over
-                6,000 species, ranging across all continents except Antarctica
+                Tenha uma visão detalhada dos seus remédios registrados. Clique
+                aqui e acesse a tela de visualização de remédios.
               </Typography>
             </CardContent>
           </CardActionArea>
@@ -182,8 +176,8 @@ const HomePage = () => {
                 Receitas
               </Typography>
               <Typography variant="body2" sx={{ color: "text.secondary" }}>
-                Lizards are a widespread group of squamate reptiles, with over
-                6,000 species, ranging across all continents except Antarctica
+                Tenha uma visão detalhada das suas receitas registradas. Clique
+                aqui e acesse a tela de visualização de receitas.
               </Typography>
             </CardContent>
           </CardActionArea>
@@ -201,8 +195,8 @@ const HomePage = () => {
                 Recados
               </Typography>
               <Typography variant="body2" sx={{ color: "text.secondary" }}>
-                Lizards are a widespread group of squamate reptiles, with over
-                6,000 species, ranging across all continents except Antarctica
+                Tenha uma visão detalhada dos seus recados registrados. Clique
+                aqui e acesse a tela de visualização de recados.
               </Typography>
             </CardContent>
           </CardActionArea>

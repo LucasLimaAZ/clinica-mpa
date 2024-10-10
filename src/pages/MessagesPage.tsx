@@ -19,23 +19,38 @@ import {
   getMessages,
 } from "../shared/services/messages.service";
 import { Delete } from "@mui/icons-material";
+import { Patient } from "../shared/types/patient";
+import { getPatients } from "../shared/services/patients.service";
 
 const MessagesPage = () => {
   const columns: GridColDef<Message[][number]>[] = [
     {
-      field: "date",
-      headerName: "Data",
-      width: 250,
+      field: "patient_id",
+      headerName: "Número",
+      width: 80,
+      valueGetter: (_, row) => row.patient.id,
     },
     {
-      field: "patient_id",
-      headerName: "Paciente",
-      width: 250,
+      field: "date",
+      headerName: "Data",
+      width: 100,
+    },
+    {
+      field: "patient_full_name",
+      headerName: "Nome",
+      width: 200,
+      valueGetter: (_, row) => row.patient.full_name,
+    },
+    {
+      field: "patient_phone",
+      headerName: "Telefone",
+      width: 200,
+      valueGetter: (_, row) => row.patient.phone,
     },
     {
       field: "message",
       headerName: "Recado",
-      width: 350,
+      width: 250,
     },
     {
       field: "actions",
@@ -59,6 +74,8 @@ const MessagesPage = () => {
   const [success, setSuccess] = useState(false);
   const [searchTerm, setSearchTerm] = useState<string>("");
   const [message, setMessage] = useState<Message>();
+  const [patients, setPatients] = useState<Patient[]>();
+  const [currentDate, setCurrentDate] = useState<string>("");
 
   const filteredMessages = messages?.filter((message) =>
     message.patient_id
@@ -68,7 +85,12 @@ const MessagesPage = () => {
   );
 
   useEffect(() => {
+    fetchPatients();
     fetchMessages();
+
+    const currentDate = new Date().toISOString().split("T")[0];
+    setCurrentDate(currentDate);
+    setMessage({ date: currentDate } as Message);
   }, []);
 
   const fetchMessages = () => {
@@ -77,6 +99,12 @@ const MessagesPage = () => {
       .then((res) => setMessages(res))
       .catch((err) => setError(err))
       .finally(() => setListLoading(false));
+  };
+
+  const fetchPatients = () => {
+    getPatients()
+      .then((res) => setPatients(res))
+      .catch((err) => console.error(err));
   };
 
   const handleInputChange = (
@@ -92,12 +120,12 @@ const MessagesPage = () => {
 
   const handleAutocompleteChange = (
     _: React.SyntheticEvent<Element, Event>,
-    option: { label: string; value: number } | null
+    option: Patient | null
   ) => {
     if (option) {
       setMessage({
         ...message,
-        patient_id: option.value,
+        patient_id: option.id,
       } as Message);
     }
   };
@@ -177,11 +205,9 @@ const MessagesPage = () => {
         <Box sx={{ padding: "32px" }}>
           <Autocomplete
             disablePortal
-            options={[
-              { label: "João da Silva", value: 1 },
-              { label: "Augusto Pereira", value: 2 },
-              { label: "César Mello", value: 3 },
-            ]}
+            options={patients || []}
+            getOptionLabel={(option) => option.full_name}
+            isOptionEqualToValue={(option, value) => option.id === value.id}
             sx={{ marginBottom: "16px" }}
             onChange={handleAutocompleteChange}
             renderInput={(params) => (
@@ -197,6 +223,7 @@ const MessagesPage = () => {
             type="date"
             slotProps={{ inputLabel: { shrink: true } }}
             name="date"
+            value={message?.date || currentDate}
           />
           <TextField
             onChange={handleInputChange}
