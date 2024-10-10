@@ -51,7 +51,7 @@ const PrescriptionsPage = () => {
       field: "patient_fullname",
       headerName: "Paciente",
       width: 100,
-      valueGetter: (_, row) => row.patient.full_name,
+      valueGetter: (_, row) => row?.patient?.full_name,
     },
     {
       field: "delete",

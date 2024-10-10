@@ -28,7 +28,7 @@ const MessagesPage = () => {
       field: "patient_id",
       headerName: "Número",
       width: 80,
-      valueGetter: (_, row) => row.patient.id,
+      valueGetter: (_, row) => row?.patient?.id,
     },
     {
       field: "date",
@@ -39,13 +39,13 @@ const MessagesPage = () => {
       field: "patient_full_name",
       headerName: "Nome",
       width: 200,
-      valueGetter: (_, row) => row.patient.full_name,
+      valueGetter: (_, row) => row?.patient?.full_name,
     },
     {
       field: "patient_phone",
       headerName: "Telefone",
       width: 200,
-      valueGetter: (_, row) => row.patient.phone,
+      valueGetter: (_, row) => row?.patient?.phone,
     },
     {
       field: "message",
