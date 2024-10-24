@@ -26,6 +26,7 @@ import StickyNote2Icon from "@mui/icons-material/StickyNote2";
 import GroupAddIcon from "@mui/icons-material/GroupAdd";
 import { useNavigate } from "react-router-dom";
 import { Home } from "@mui/icons-material";
+import BiotechIcon from "@mui/icons-material/Biotech";
 
 const drawerWidth = 240;
 
@@ -369,6 +370,41 @@ export default function SideDrawer() {
               </ListItemIcon>
               <ListItemText
                 primary={"Receitas"}
+                sx={[
+                  open
+                    ? {
+                        opacity: 1,
+                      }
+                    : {
+                        opacity: 0,
+                      },
+                ]}
+              />
+            </ListItemButton>
+          </ListItem>
+          <ListItem disablePadding sx={{ display: "block" }}>
+            <ListItemButton
+              onClick={() => {
+                handleDrawerClose();
+                navigate("/requisicao-exames");
+              }}
+              sx={[
+                { minHeight: 48, px: 2.5 },
+                open
+                  ? { justifyContent: "initial" }
+                  : { justifyContent: "center" },
+              ]}
+            >
+              <ListItemIcon
+                sx={[
+                  { minWidth: 0, justifyContent: "center" },
+                  open ? { mr: 3 } : { mr: "auto" },
+                ]}
+              >
+                <BiotechIcon />
+              </ListItemIcon>
+              <ListItemText
+                primary={"Requisição de exames"}
                 sx={[
                   open
                     ? {

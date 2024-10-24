@@ -13,6 +13,7 @@ export type Patient = {
   uf: string;
   neighborhood: string;
   observations: string;
+  file_location: string;
 };
 
 export type Label = {

@@ -7,6 +7,7 @@ import PrescriptionsPage from "./pages/PrescriptionsPage";
 import { createMemoryRouter } from "react-router-dom";
 import MessagesPage from "./pages/MessagesPage";
 import MedicationsPage from "./pages/MedicationsPage";
+import ExamRequestsPage from "./pages/ExamRequests";
 
 export const router = createMemoryRouter([
   {
@@ -54,6 +55,14 @@ export const router = createMemoryRouter([
     element: (
       <ProtectedRoute>
         <MedicationsPage />
+      </ProtectedRoute>
+    ),
+  },
+  {
+    path: "/requisicao-exames",
+    element: (
+      <ProtectedRoute>
+        <ExamRequestsPage />
       </ProtectedRoute>
     ),
   },
