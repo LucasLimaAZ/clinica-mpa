@@ -271,6 +271,15 @@ const NewPatientPage = () => {
               fullWidth
               label="Indicação"
             />
+            <TextField
+              slotProps={{ inputLabel: { shrink: edit ? true : undefined } }}
+              onChange={handleInputChange}
+              value={patient?.file_location}
+              name="file_location"
+              variant="standard"
+              fullWidth
+              label="Localização da ficha"
+            />
           </Box>
           <Box
             sx={{
