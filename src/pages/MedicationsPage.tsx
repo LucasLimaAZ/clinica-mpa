@@ -110,8 +110,15 @@ const MedicationsPage = () => {
   };
 
   return (
-    <Box display="flex" justifyContent="space-between" gap="16px">
-      <Paper sx={{ width: "70%" }}>
+    <Box
+      sx={{
+        display: "flex",
+        justifyContent: "space-between",
+        gap: "16px",
+        flexDirection: { xs: "column", lg: "row" },
+      }}
+    >
+      <Paper sx={{ width: { lg: "70%", xs: "100%" } }}>
         <Box sx={{ padding: "32px" }}>
           <Typography variant="h4">Remédios</Typography>
         </Box>
@@ -151,7 +158,7 @@ const MedicationsPage = () => {
             )}
         </Box>
       </Paper>
-      <Paper sx={{ width: "30%" }}>
+      <Paper sx={{ width: { lg: "30%", xs: "100%" } }}>
         <Box sx={{ padding: "32px" }}>
           <Typography variant="h4">Adicionar remédios</Typography>
         </Box>
