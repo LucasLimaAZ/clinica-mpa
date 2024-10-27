@@ -42,7 +42,7 @@ const HomePage = () => {
     <Box>
       <Box
         sx={{
-          display: "flex",
+          display: { xs: "none", lg: "flex" },
           marginBottom: "32px",
           justifyContent: "center",
           gap: "16px",
@@ -124,14 +124,22 @@ const HomePage = () => {
           <IssueLabel />
         </Paper>
       </Box>
-      <Box sx={{ display: "flex", justifyContent: "center", gap: "16px" }}>
+      <Box
+        sx={{
+          display: "flex",
+          justifyContent: "center",
+          gap: "16px",
+          flexDirection: { xs: "column", sm: "row" },
+          alignItems: { xs: "center", sm: "stretch" },
+        }}
+      >
         <Card>
           <CardActionArea onClick={() => navigate("/pacientes")}>
             <CardMedia
+              sx={{ display: { lg: "inherit", xs: "none" } }}
               component="img"
               height="140"
               image={MedicImg}
-              alt="green iguana"
             />
             <CardContent>
               <Typography gutterBottom variant="h5" component="div">
@@ -147,10 +155,10 @@ const HomePage = () => {
         <Card>
           <CardActionArea onClick={() => navigate("/remedios")}>
             <CardMedia
+              sx={{ display: { lg: "inherit", xs: "none" } }}
               component="img"
               height="140"
               image={MedicationImg}
-              alt="green iguana"
             />
             <CardContent>
               <Typography gutterBottom variant="h5" component="div">
@@ -166,10 +174,10 @@ const HomePage = () => {
         <Card>
           <CardActionArea onClick={() => navigate("/receitas")}>
             <CardMedia
+              sx={{ display: { lg: "inherit", xs: "none" } }}
               component="img"
               height="140"
               image={PrescriptionImg}
-              alt="green iguana"
             />
             <CardContent>
               <Typography gutterBottom variant="h5" component="div">
@@ -185,10 +193,10 @@ const HomePage = () => {
         <Card>
           <CardActionArea onClick={() => navigate("/recados")}>
             <CardMedia
+              sx={{ display: { lg: "inherit", xs: "none" } }}
               component="img"
               height="140"
               image={NoteImg}
-              alt="green iguana"
             />
             <CardContent>
               <Typography gutterBottom variant="h5" component="div">

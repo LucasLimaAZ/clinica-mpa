@@ -6,7 +6,9 @@ const Container: React.FC<{ children: React.ReactElement }> = ({
   return (
     <Box sx={{ backgroundColor: "rgb(245, 245, 245)" }}>
       <SideDrawer />
-      <Box sx={{ padding: "5%" }}>{children}</Box>
+      <Box sx={{ padding: "5%", marginTop: { xs: "12%", lg: 0 } }}>
+        {children}
+      </Box>
     </Box>
   );
 };

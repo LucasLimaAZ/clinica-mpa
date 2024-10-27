@@ -10,4 +10,5 @@ type Patient = {
   id: number;
   full_name: string;
   phone: number;
+  file_location?: string;
 };

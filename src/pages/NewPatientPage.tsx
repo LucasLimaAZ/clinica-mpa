@@ -98,7 +98,7 @@ const NewPatientPage = () => {
 
   return (
     <Box sx={{ display: "flex", justifyContent: "center" }}>
-      <Paper sx={{ width: "50%" }}>
+      <Paper sx={{ width: { lg: "50%", xs: "100%" } }}>
         <Typography sx={{ padding: "4%" }} variant="h4">
           {edit ? "Editar" : "Cadastrar novo"} paciente
         </Typography>

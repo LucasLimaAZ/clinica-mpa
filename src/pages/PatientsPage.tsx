@@ -22,9 +22,9 @@ const columns: GridColDef<Patient[][number]>[] = [
     width: 250,
   },
   {
-    field: "address",
-    headerName: "Endereço",
-    width: 250,
+    field: "file_location",
+    headerName: "Localização da ficha",
+    width: 180,
   },
   {
     field: "mobile_phone",

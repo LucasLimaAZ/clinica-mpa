@@ -42,9 +42,15 @@ const MessagesPage = () => {
       valueGetter: (_, row) => row?.patient?.full_name,
     },
     {
+      field: "file_location",
+      headerName: "Localização da ficha",
+      width: 170,
+      valueGetter: (_, row) => row?.patient?.file_location,
+    },
+    {
       field: "patient_phone",
       headerName: "Telefone",
-      width: 200,
+      width: 130,
       valueGetter: (_, row) => row?.patient?.phone,
     },
     {
@@ -158,8 +164,15 @@ const MessagesPage = () => {
   };
 
   return (
-    <Box display="flex" justifyContent="space-between" gap="16px">
-      <Paper sx={{ width: "70%" }}>
+    <Box
+      sx={{
+        display: "flex",
+        justifyContent: "space-between",
+        gap: "16px",
+        flexDirection: { xs: "column", lg: "row" },
+      }}
+    >
+      <Paper sx={{ width: { lg: "70%", xs: "100%" } }}>
         <Box sx={{ padding: "32px" }}>
           <Typography variant="h4">Recados</Typography>
         </Box>
@@ -197,7 +210,7 @@ const MessagesPage = () => {
           )}
         </Box>
       </Paper>
-      <Paper sx={{ width: "30%" }}>
+      <Paper sx={{ width: { lg: "30%", xs: "100%" } }}>
         <Box sx={{ padding: "32px" }}>
           <Typography variant="h4">Adicionar recado</Typography>
         </Box>
