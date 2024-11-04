@@ -12,12 +12,15 @@ import { login } from "../shared/services/users.service";
 import { AuthError } from "../shared/types/user";
 import { useNavigate } from "react-router-dom";
 import { setLocalToken } from "../shared/helper";
+import Modal from "../components/Modal/Modal";
 
 const LoginPage = () => {
   const [email, setEmail] = useState<string>();
   const [password, setPassword] = useState<string>();
   const [isLoading, setIsLoading] = useState<boolean>();
   const [error, setError] = useState<AuthError>();
+  const [isResetPassModalOpen, setResetPassModalOpen] =
+    useState<boolean>(false);
   const navigate = useNavigate();
 
   const handleEmailChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -44,6 +47,10 @@ const LoginPage = () => {
         })
         .finally(() => setIsLoading(false));
     }
+  };
+
+  const handleForgotMyPassword = () => {
+    setResetPassModalOpen(true);
   };
 
   return (
@@ -84,7 +91,7 @@ const LoginPage = () => {
           required
           variant="standard"
         />
-        {isLoading && <CircularProgress sx={{ padding: "4%" }} />}
+        {isLoading && <CircularProgress sx={{ marginTop: "16px" }} />}
         <Button
           sx={{ marginTop: "32px" }}
           disabled={isLoading}
@@ -93,11 +100,45 @@ const LoginPage = () => {
         >
           Acessar
         </Button>
+        <Button sx={{ marginTop: "32px" }} onClick={handleForgotMyPassword}>
+          Esqueci minha senha
+        </Button>
         {error?.isError && (
           <Alert sx={{ marginTop: "8px" }} severity="error">
             {error.errorMessage}
           </Alert>
         )}
+        <Modal
+          onClose={() => setResetPassModalOpen(false)}
+          open={isResetPassModalOpen}
+          title="Recuperar senha"
+          content={
+            <Box>
+              <Typography>
+                Para recuperar sua senha informe seu endereço de email:{" "}
+              </Typography>
+              <TextField
+                fullWidth
+                sx={{ marginTop: "16px" }}
+                size="small"
+                label="Email"
+              />
+              <Button
+                variant="contained"
+                sx={{ marginTop: "16px" }}
+                onClick={() => setResetPassModalOpen(false)}
+              >
+                Enviar
+              </Button>
+              <Box sx={{ marginTop: "32px" }}>
+                <Typography variant="caption">
+                  Você receberá instruções no seu Email para recuperar sua
+                  senha.
+                </Typography>
+              </Box>
+            </Box>
+          }
+        ></Modal>
       </Paper>
     </Box>
   );

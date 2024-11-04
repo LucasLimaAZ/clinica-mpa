@@ -21,6 +21,7 @@ import {
 import { Delete } from "@mui/icons-material";
 import { Patient } from "../shared/types/patient";
 import { getPatients } from "../shared/services/patients.service";
+import { formatDate } from "../shared/helper";
 
 const MessagesPage = () => {
   const columns: GridColDef<Message[][number]>[] = [
@@ -34,24 +35,37 @@ const MessagesPage = () => {
       field: "date",
       headerName: "Data",
       width: 100,
+      valueGetter: (_, row) => formatDate(row?.date),
     },
     {
       field: "patient_full_name",
       headerName: "Nome",
-      width: 200,
-      valueGetter: (_, row) => row?.patient?.full_name,
+      width: 150,
+      valueGetter: (_, row) => row?.patient?.full_name || "Não informado",
     },
     {
       field: "file_location",
       headerName: "Localização da ficha",
-      width: 170,
+      width: 100,
       valueGetter: (_, row) => row?.patient?.file_location,
     },
     {
       field: "patient_phone",
       headerName: "Telefone",
-      width: 130,
+      width: 100,
       valueGetter: (_, row) => row?.patient?.phone,
+    },
+    {
+      field: "patient_mobile_phone",
+      headerName: "Celular",
+      width: 120,
+      valueGetter: (_, row) => row?.patient?.mobile_phone,
+    },
+    {
+      field: "patient_business_phone",
+      headerName: "Tel. comercial",
+      width: 100,
+      valueGetter: (_, row) => row?.patient?.business_phone,
     },
     {
       field: "message",
@@ -62,7 +76,7 @@ const MessagesPage = () => {
       field: "actions",
       headerName: "Excluir",
       type: "actions",
-      width: 150,
+      width: 70,
       getActions: (params) => [
         <GridActionsCellItem
           icon={<Delete color="error" />}
@@ -84,7 +98,7 @@ const MessagesPage = () => {
   const [currentDate, setCurrentDate] = useState<string>("");
 
   const filteredMessages = messages?.filter((message) =>
-    message.patient_id
+    message.patient.full_name
       .toString()
       .toLowerCase()
       .includes(searchTerm.toLowerCase())
@@ -109,7 +123,10 @@ const MessagesPage = () => {
 
   const fetchPatients = () => {
     getPatients()
-      .then((res) => setPatients(res))
+      .then((res) => {
+        const nonInformed = { id: 404, full_name: "Não informado" } as Patient;
+        setPatients([nonInformed, ...res]);
+      })
       .catch((err) => console.error(err));
   };
 

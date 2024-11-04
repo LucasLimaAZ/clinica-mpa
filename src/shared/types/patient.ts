@@ -14,6 +14,7 @@ export type Patient = {
   neighborhood: string;
   observations: string;
   file_location: string;
+  created_at: string | Date;
 };
 
 export type Label = {
