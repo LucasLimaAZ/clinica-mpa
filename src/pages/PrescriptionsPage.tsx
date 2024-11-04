@@ -23,6 +23,9 @@ import Modal from "../components/Modal/Modal";
 import PrescriptionPdf from "../components/PrescriptionPdf/PrescriptionPdf";
 import { Patient } from "../shared/types/patient";
 import { getPatients } from "../shared/services/patients.service";
+import { Medication } from "../shared/types/medication";
+import { getMedications } from "../shared/services/medications.service";
+import { formatDate } from "../shared/helper";
 
 const PrescriptionsPage = () => {
   const columns: GridColDef<Prescription[][number]>[] = [
@@ -31,6 +34,7 @@ const PrescriptionsPage = () => {
       field: "date",
       headerName: "Data",
       width: 100,
+      valueGetter: (_, row) => formatDate(row?.date),
     },
     {
       field: "medication",
@@ -75,7 +79,26 @@ const PrescriptionsPage = () => {
         <GridActionsCellItem
           icon={<Print color="primary" />}
           label="Imprimir"
-          onClick={() => handlePrescriptionModal(params.row)}
+          onClick={() => {
+            setIsSpecialPrescription(false);
+            handlePrescriptionModal(params.row);
+          }}
+        />,
+      ],
+    },
+    {
+      field: "print_special",
+      headerName: "Imprimir especial",
+      type: "actions",
+      width: 150,
+      getActions: (params) => [
+        <GridActionsCellItem
+          icon={<Print color="info" />}
+          label="Imprimir especial"
+          onClick={() => {
+            setIsSpecialPrescription(true);
+            handlePrescriptionModal(params.row);
+          }}
         />,
       ],
     },
@@ -83,21 +106,26 @@ const PrescriptionsPage = () => {
 
   const [prescriptions, setPrescriptions] = useState<Prescription[]>();
   const [loading, setLoading] = useState(false);
+  const [loadingPatients, setLoadingPatients] = useState(true);
+  const [loadingMedications, setLoadingMedications] = useState(true);
   const [listLoading, setListLoading] = useState(true);
   const [error, setError] = useState(false);
   const [success, setSuccess] = useState(false);
   const [searchTerm, setSearchTerm] = useState<string>("");
   const [prescription, setPrescription] = useState<Prescription>();
   const [currentDate, setCurrentDate] = useState<string>("");
+  const [isSpecialPrescription, setIsSpecialPrescription] = useState<boolean>();
   const [openPrescriptionModal, setOpenPrescriptionModal] =
     useState<boolean>(false);
   const [selectedPrescription, setSelectedPrescription] =
     useState<Prescription>();
   const [patients, setPatients] = useState<Patient[]>();
+  const [medications, setMedications] = useState<Medication[]>();
 
   useEffect(() => {
     fetchPatients();
     fetchPrescriptions();
+    fetchMedications();
 
     const currentDate = new Date().toISOString().split("T")[0];
     setCurrentDate(currentDate);
@@ -105,7 +133,7 @@ const PrescriptionsPage = () => {
   }, []);
 
   const filteredPrescriptions = prescriptions?.filter((prescription) =>
-    prescription.patient_id
+    prescription.patient.full_name
       .toString()
       .toLowerCase()
       .includes(searchTerm.toLowerCase())
@@ -114,7 +142,15 @@ const PrescriptionsPage = () => {
   const fetchPatients = () => {
     getPatients()
       .then((res) => setPatients(res))
-      .catch((err) => console.error(err));
+      .catch((err) => console.error(err))
+      .finally(() => setLoadingPatients(false));
+  };
+
+  const fetchMedications = () => {
+    getMedications()
+      .then((res) => setMedications(res))
+      .catch((err) => console.error(err))
+      .finally(() => setLoadingMedications(false));
   };
 
   const handlePrescriptionModal = (prescription: Prescription) => {
@@ -141,6 +177,18 @@ const PrescriptionsPage = () => {
       setPrescription({
         ...prescription,
         patient_id: option.id,
+      } as Prescription);
+    }
+  };
+
+  const handleMedicationChange = (
+    _: React.SyntheticEvent<Element, Event>,
+    option: Medication | null
+  ) => {
+    if (option) {
+      setPrescription({
+        ...prescription,
+        medication: option.name,
       } as Prescription);
     }
   };
@@ -236,6 +284,7 @@ const PrescriptionsPage = () => {
         <Divider />
         <Box sx={{ padding: "32px" }}>
           <Autocomplete
+            disabled={loadingPatients}
             disablePortal
             options={patients || []}
             getOptionLabel={(option) => option.full_name}
@@ -245,13 +294,16 @@ const PrescriptionsPage = () => {
               <TextField variant="standard" {...params} label="Paciente" />
             )}
           />
-          <TextField
-            onChange={handleInputChange}
-            variant="standard"
+          <Autocomplete
+            disabled={loadingMedications}
+            disablePortal
+            options={medications || []}
+            getOptionLabel={(option) => option.name}
+            onChange={handleMedicationChange}
             sx={{ marginBottom: "16px" }}
-            fullWidth
-            label="Remédio"
-            name="medication"
+            renderInput={(params) => (
+              <TextField variant="standard" {...params} label="Remédio" />
+            )}
           />
           <TextField
             onChange={handleInputChange}
@@ -308,7 +360,12 @@ const PrescriptionsPage = () => {
       <Modal
         open={openPrescriptionModal}
         content={
-          selectedPrescription && <PrescriptionPdf {...selectedPrescription} />
+          selectedPrescription && (
+            <PrescriptionPdf
+              special={isSpecialPrescription}
+              prescription={selectedPrescription}
+            />
+          )
         }
         title="Imprimir Receita"
         onClose={() => setOpenPrescriptionModal(false)}

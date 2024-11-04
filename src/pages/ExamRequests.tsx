@@ -23,6 +23,7 @@ import { Patient } from "../shared/types/patient";
 import { getPatients } from "../shared/services/patients.service";
 import Modal from "../components/Modal/Modal";
 import ExamRequestPdf from "../components/ExamRequestPdf/ExamRequestPdf";
+import { formatDate } from "../shared/helper";
 
 const ExamRequestsPage = () => {
   const columns: GridColDef<ExamRequest[][number]>[] = [
@@ -35,6 +36,7 @@ const ExamRequestsPage = () => {
       field: "date",
       headerName: "Data",
       width: 100,
+      valueGetter: (_, row) => formatDate(row?.date),
     },
     {
       field: "patient_full_name",
@@ -134,8 +136,6 @@ const ExamRequestsPage = () => {
       | React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
       | SelectChangeEvent<string>
   ) => {
-    console.log(e.target.value);
-    console.log(e.target.name);
     setExamRequest({
       ...examRequest,
       [e.target.name]: e.target.value,

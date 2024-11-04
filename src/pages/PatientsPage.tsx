@@ -13,6 +13,7 @@ import { useNavigate } from "react-router-dom";
 import { Patient } from "../shared/types/patient";
 import { useEffect, useState } from "react";
 import { getPatients } from "../shared/services/patients.service";
+import { formatDate } from "../shared/helper";
 
 const columns: GridColDef<Patient[][number]>[] = [
   { field: "id", headerName: "ID", width: 50 },
@@ -33,13 +34,19 @@ const columns: GridColDef<Patient[][number]>[] = [
   },
   {
     field: "genre",
-    headerName: "Gênero",
+    headerName: "Sexo",
     width: 70,
   },
   {
     field: "observations",
     headerName: "Observações",
     width: 350,
+  },
+  {
+    field: "created_at",
+    headerName: "Data de registro",
+    width: 120,
+    valueGetter: (_, row) => formatDate(row?.created_at),
   },
 ];
 

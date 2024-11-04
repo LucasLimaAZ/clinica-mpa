@@ -1,5 +1,6 @@
 import {
   Alert,
+  Autocomplete,
   Box,
   Button,
   CircularProgress,
@@ -49,6 +50,18 @@ const NewPatientPage = () => {
       ...patient,
       [e.target.name]: e.target.value,
     } as Patient);
+  };
+
+  const handleSexoChange = (
+    _: React.SyntheticEvent<Element, Event>,
+    option: { label: string; id: string } | null
+  ) => {
+    if (option) {
+      setPatient({
+        ...patient,
+        genre: option.id,
+      } as Patient);
+    }
   };
 
   const handleSubmit = () => {
@@ -169,14 +182,20 @@ const NewPatientPage = () => {
               paddingY: "2%",
             }}
           >
-            <TextField
-              slotProps={{ inputLabel: { shrink: edit ? true : undefined } }}
-              onChange={handleInputChange}
-              value={patient?.genre}
-              name="genre"
-              variant="standard"
+            <Autocomplete
               fullWidth
-              label="Gênero"
+              disablePortal
+              options={[
+                { label: "Masculino", id: "Masculino" },
+                { label: "Feminino", id: "Feminino" },
+                { label: "Não informado", id: "Não informado" },
+              ]}
+              getOptionLabel={(option) => option.id}
+              onChange={handleSexoChange}
+              sx={{ marginBottom: "16px" }}
+              renderInput={(params) => (
+                <TextField variant="standard" {...params} label="Sexo" />
+              )}
             />
             <TextField
               slotProps={{ inputLabel: { shrink: edit ? true : undefined } }}
