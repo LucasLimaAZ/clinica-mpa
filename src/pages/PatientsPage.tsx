@@ -16,7 +16,7 @@ import { getPatients } from "../shared/services/patients.service";
 import { formatDate } from "../shared/helper";
 
 const columns: GridColDef<Patient[][number]>[] = [
-  { field: "id", headerName: "ID", width: 50 },
+  { field: "id", headerName: "Ficha Nº", width: 80 },
   {
     field: "full_name",
     headerName: "Nome completo ",
@@ -115,7 +115,7 @@ const PatientsPage = () => {
             initialState={{
               pagination: {
                 paginationModel: {
-                  pageSize: 5,
+                  pageSize: 10,
                 },
               },
             }}
