@@ -22,7 +22,7 @@ import Modal from "../components/Modal/Modal";
 
 const NewPatientPage = () => {
   const [patient, setPatient] = useState<Patient>();
-  const [success, setSuccess] = useState(false);
+  const [success, setSuccess] = useState<number>();
   const [error, setError] = useState(false);
   const [loading, setLoading] = useState(false);
   const [edit, setEdit] = useState(false);
@@ -70,24 +70,22 @@ const NewPatientPage = () => {
 
       if (edit) {
         updatePatient(patient)
-          .then(() => setSuccess(true))
+          .then((res) => setSuccess(res.patient.id))
           .catch((err) => setError(err))
           .finally(() => {
             setLoading(false);
             setTimeout(() => {
               setError(false);
-              setSuccess(false);
             }, 2000);
           });
       } else {
         createPatient(patient)
-          .then(() => setSuccess(true))
+          .then((res) => setSuccess(res.patient.id))
           .catch((err) => setError(err))
           .finally(() => {
             setLoading(false);
             setTimeout(() => {
               setError(false);
-              setSuccess(false);
             }, 2000);
           });
       }
@@ -356,15 +354,14 @@ const NewPatientPage = () => {
               </Alert>
             </Box>
           )}
-          {success && (
-            <Box sx={{ paddingBottom: "32px", paddingX: "4%" }}>
-              <Alert severity="success">
-                Paciente {edit ? "atualizado" : "cadastrado"} com sucesso!
-              </Alert>
-            </Box>
-          )}
         </Box>
       </Paper>
+      <Modal
+        open={!!success}
+        onClose={() => setSuccess(undefined)}
+        title={`Ficha Nº ${862}`}
+        content="Paciente cadastrado com sucesso!"
+      />
       <Modal
         open={showConfirmDelete}
         onClose={() => setShowConfirmDelete(false)}

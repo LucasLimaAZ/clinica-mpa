@@ -27,7 +27,7 @@ const MessagesPage = () => {
   const columns: GridColDef<Message[][number]>[] = [
     {
       field: "patient_id",
-      headerName: "Número",
+      headerName: "Ficha Nº",
       width: 80,
       valueGetter: (_, row) => row?.patient?.id,
     },
@@ -98,7 +98,7 @@ const MessagesPage = () => {
   const [currentDate, setCurrentDate] = useState<string>("");
 
   const filteredMessages = messages?.filter((message) =>
-    message.patient.full_name
+    message?.patient?.full_name
       .toString()
       .toLowerCase()
       .includes(searchTerm.toLowerCase())
@@ -154,9 +154,14 @@ const MessagesPage = () => {
   };
 
   const handleSubmit = () => {
-    if (message && message.message) {
+    let validatedMessage = message;
+    if (!validatedMessage?.message) {
+      validatedMessage = { ...validatedMessage, message: "-" } as Message;
+    }
+
+    if (validatedMessage?.patient_id) {
       setLoading(true);
-      createMessage(message)
+      createMessage(validatedMessage)
         .then(() => setSuccess(true))
         .catch((err) => setError(err))
         .finally(() => {
@@ -212,12 +217,12 @@ const MessagesPage = () => {
           )}
           {!listLoading && filteredMessages && filteredMessages.length > 0 && (
             <DataGrid
-              rows={filteredMessages}
+              rows={searchTerm ? filteredMessages : messages}
               columns={columns}
               initialState={{
                 pagination: {
                   paginationModel: {
-                    pageSize: 5,
+                    pageSize: 10,
                   },
                 },
               }}
@@ -273,6 +278,7 @@ const MessagesPage = () => {
             sx={{ marginTop: "32px" }}
             fullWidth
             variant="contained"
+            disabled={loading}
           >
             Adicionar
           </Button>
