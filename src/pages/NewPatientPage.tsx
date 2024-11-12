@@ -359,7 +359,7 @@ const NewPatientPage = () => {
       <Modal
         open={!!success}
         onClose={() => setSuccess(undefined)}
-        title={`Ficha Nº ${862}`}
+        title={`Ficha Nº ${success}`}
         content="Paciente cadastrado com sucesso!"
       />
       <Modal
