@@ -21,14 +21,14 @@ const styles = StyleSheet.create({
   title: {
     textAlign: "center",
     fontWeight: "bold",
-    fontSize: 12,
+    fontSize: 9,
     marginBottom: 32,
   },
   nomeMedico: {
-    fontSize: 10,
+    fontSize: 8,
   },
   dadosMedico: {
-    fontSize: 9,
+    fontSize: 7,
     display: "flex",
   },
 });
@@ -42,7 +42,7 @@ const PrescriptionPdf = ({ prescription, special }: PdfProps) => {
   return (
     <PDFViewer width={"100%"} height={"480px"}>
       <Document>
-        <Page size="A4" style={styles.page}>
+        <Page size="A5" style={styles.page}>
           <View style={styles.section}>
             {special && (
               <>
@@ -74,12 +74,20 @@ const PrescriptionPdf = ({ prescription, special }: PdfProps) => {
                 </View>
               </>
             )}
-            <View style={{ marginHorizontal: "auto", marginTop: "100px" }}>
+            <View
+              style={{
+                marginHorizontal: "auto",
+                marginTop: "100px",
+                fontSize: "12px",
+              }}
+            >
               <Text>Solicito autorizar: {prescription.patient.full_name}</Text>
               <Text>
                 comprar {prescription.amount} de {prescription.medication}
               </Text>
-              <Text>Modo de uso: {prescription.how_to_use}</Text>
+              {prescription.how_to_use && (
+                <Text>Modo de uso: {prescription.how_to_use}</Text>
+              )}
             </View>
 
             {special && (
@@ -90,7 +98,7 @@ const PrescriptionPdf = ({ prescription, special }: PdfProps) => {
                     flexDirection: "row",
                     justifyContent: "space-between",
                     marginTop: "150px",
-                    fontSize: 10,
+                    fontSize: 8,
                   }}
                 >
                   <View>

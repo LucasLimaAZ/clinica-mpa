@@ -26,10 +26,10 @@ import { formatDate } from "../shared/helper";
 const MessagesPage = () => {
   const columns: GridColDef<Message[][number]>[] = [
     {
-      field: "patient_id",
+      field: "file_number",
       headerName: "Ficha Nº",
       width: 80,
-      valueGetter: (_, row) => row?.patient?.id,
+      valueGetter: (_, row) => row?.patient?.file_number,
     },
     {
       field: "date",
@@ -245,6 +245,15 @@ const MessagesPage = () => {
             isOptionEqualToValue={(option, value) => option.id === value.id}
             sx={{ marginBottom: "16px" }}
             onChange={handleAutocompleteChange}
+            filterOptions={(options, { inputValue }) =>
+              options
+                .filter((option) =>
+                  option.full_name
+                    .toLowerCase()
+                    .includes(inputValue.toLowerCase())
+                )
+                .slice(0, 100)
+            }
             renderInput={(params) => (
               <TextField variant="standard" {...params} label="Paciente" />
             )}

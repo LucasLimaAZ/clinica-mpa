@@ -16,7 +16,7 @@ import { getPatients } from "../shared/services/patients.service";
 import { formatDate } from "../shared/helper";
 
 const columns: GridColDef<Patient[][number]>[] = [
-  { field: "id", headerName: "Ficha Nº", width: 80 },
+  { field: "file_number", headerName: "Ficha Nº", width: 80 },
   {
     field: "full_name",
     headerName: "Nome completo ",
