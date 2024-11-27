@@ -316,7 +316,7 @@ const NewPatientPage = () => {
               fullWidth
               label="Observações"
             />
-            <TextField
+            {edit && (<TextField
               slotProps={{ inputLabel: { shrink: edit ? true : undefined } }}
               onChange={handleInputChange}
               value={patient?.file_number}
@@ -325,7 +325,7 @@ const NewPatientPage = () => {
               variant="standard"
               fullWidth
               label="Número da ficha"
-            />
+            />)}
           </Box>
           {loading && (
             <Box sx={{ padding: "4%" }}>

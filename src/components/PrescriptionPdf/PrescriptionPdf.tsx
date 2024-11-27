@@ -5,8 +5,11 @@ import {
   StyleSheet,
   PDFViewer,
   Text,
+  Image,
 } from "@react-pdf/renderer";
 import { Prescription } from "../../shared/types/prescription";
+import { formatDate } from "../../shared/helper";
+import RiscoImg from "../../assets/img/risco.png";
 
 const styles = StyleSheet.create({
   page: {
@@ -44,89 +47,41 @@ const PrescriptionPdf = ({ prescription, special }: PdfProps) => {
       <Document>
         <Page size="A5" style={styles.page}>
           <View style={styles.section}>
-            {special && (
-              <>
-                <Text style={styles.title}>
-                  RECEITUÁRIO DE CONTROLE ESPECIAL
-                </Text>
-
-                <View
-                  style={{
-                    display: "flex",
-                    flexDirection: "row",
-                    justifyContent: "space-between",
-                  }}
-                >
-                  <View style={styles.nomeMedico}>
-                    <Text>Pedro Antônio Schmidt do Prado Lima</Text>
-                    <View style={styles.dadosMedico}>
-                      <Text>Médico</Text>
-                      <Text>CREMERS 13202 - CPF 389231140-49</Text>
-                    </View>
-                  </View>
-
-                  <View style={styles.nomeMedico}>
-                    <Text>
-                      Rua Alvares Machado, 44/305 - Fone: (51) 3330-4577
-                    </Text>
-                    <Text>{prescription.date}</Text>
-                  </View>
-                </View>
-              </>
-            )}
             <View
               style={{
                 marginHorizontal: "auto",
-                marginTop: "100px",
+                marginTop: "50px",
                 fontSize: "12px",
+                minWidth: "100%",
               }}
             >
-              <Text>Solicito autorizar: {prescription.patient.full_name}</Text>
-              <Text>
-                comprar {prescription.amount} de {prescription.medication}
-              </Text>
-              {prescription.how_to_use && (
-                <Text>Modo de uso: {prescription.how_to_use}</Text>
-              )}
+              <View style={{display: "flex", justifyContent: "space-between", flexDirection: "row", fontSize: 14}}>
+                <Text>{!special && prescription.patient.full_name}</Text>
+                <Text>{formatDate(prescription.date)}</Text>
+              </View>
+              {special ? (
+                <View style={{marginTop: "50px"}}>
+                  <Text>Solicito autorizar: {prescription.patient.full_name}</Text>
+                  <Text>
+                    comprar {prescription.amount} de {prescription.medication}
+                  </Text>
+                  {prescription.how_to_use && (
+                    <Text>Modo de uso: {prescription.how_to_use}</Text>
+                  )}
+                </View>) : (
+                <View style={{marginTop: "50px"}}>
+                  <Text>
+                    {prescription.amount}
+                  </Text>
+                  <Text>
+                    {prescription.medication}
+                  </Text>
+                  {prescription.how_to_use && (
+                    <Text>Modo de uso: {prescription.how_to_use}</Text>
+                  )}
+                </View>)}
+                <Image src={RiscoImg} style={{width: "200px", marginHorizontal: "auto", marginTop: "32px"}} />
             </View>
-
-            {special && (
-              <>
-                <View
-                  style={{
-                    display: "flex",
-                    flexDirection: "row",
-                    justifyContent: "space-between",
-                    marginTop: "150px",
-                    fontSize: 8,
-                  }}
-                >
-                  <View>
-                    <Text style={{ marginBottom: 16 }}>
-                      IDENTIFICAÇÃO DO COMPRADOR
-                    </Text>
-                    <Text style={{ marginBottom: 8 }}>Nome:</Text>
-                    <Text style={{ marginBottom: 8 }}>Identidade:</Text>
-                    <Text style={{ marginBottom: 8 }}>Órgão Expedidor:</Text>
-                    <Text style={{ marginBottom: 8 }}>Endereço:</Text>
-                    <Text style={{ marginBottom: 8 }}>Cidade:</Text>
-                    <Text style={{ marginBottom: 8 }}>Telefone:</Text>
-                    <Text style={{ marginBottom: 8 }}>Uf:</Text>
-                  </View>
-
-                  <View>
-                    <Text style={{ marginBottom: 16 }}>
-                      IDENTIFICAÇÃO DO FORNECEDOR
-                    </Text>
-                    <Text style={{ marginBottom: 16 }}>
-                      Data: ____/____/____
-                    </Text>
-                    <Text>____________________________________</Text>
-                    <Text>Assinatura do farmacêutico</Text>
-                  </View>
-                </View>
-              </>
-            )}
           </View>
         </Page>
       </Document>
