@@ -13,4 +13,5 @@ type Patient = {
   mobile_phone: string;
   business_phone: string;
   file_location?: string;
+  file_number: number;
 };

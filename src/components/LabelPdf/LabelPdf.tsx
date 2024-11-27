@@ -17,7 +17,15 @@ const styles = StyleSheet.create({
     margin: 20,
     padding: 20,
     flexGrow: 1,
-    fontSize: 24,
+    fontSize: 14,
+  },
+  row: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+  },
+  column: {
+    flex: 1,
+    paddingHorizontal: "10px",
   },
 });
 
@@ -30,11 +38,26 @@ const LabelPdf = (props: LabelPdfProps) => (
     <Document>
       <Page size="A4" style={styles.page}>
         <View style={styles.section}>
-          {props.etiquetas?.map((etiqueta) => (
-            <Text style={{ paddingVertical: "8px" }}>
-              {etiqueta.id} - {etiqueta.full_name}
-            </Text>
-          ))}
+          <View style={styles.row}>
+            <View style={styles.column}>
+              {props.etiquetas
+                ?.filter((_, index) => index % 2 === 0)
+                .map((etiqueta) => (
+                  <Text key={etiqueta.id} style={{ paddingVertical: "24px" }}>
+                    {etiqueta.id} - {etiqueta.full_name}
+                  </Text>
+                ))}
+            </View>
+            <View style={styles.column}>
+              {props.etiquetas
+                ?.filter((_, index) => index % 2 !== 0)
+                .map((etiqueta) => (
+                  <Text key={etiqueta.id} style={{ paddingVertical: "24px" }}>
+                    {etiqueta.id} - {etiqueta.full_name}
+                  </Text>
+                ))}
+            </View>
+          </View>
         </View>
       </Page>
     </Document>

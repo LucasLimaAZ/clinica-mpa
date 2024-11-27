@@ -14,6 +14,7 @@ export type Patient = {
   neighborhood: string;
   observations: string;
   file_location: string;
+  file_number: number;
   created_at: string | Date;
 };
 

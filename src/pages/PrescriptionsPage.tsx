@@ -288,6 +288,15 @@ const PrescriptionsPage = () => {
             disablePortal
             options={patients || []}
             getOptionLabel={(option) => option.full_name}
+            filterOptions={(options, { inputValue }) =>
+              options
+                .filter((option) =>
+                  option.full_name
+                    .toLowerCase()
+                    .includes(inputValue.toLowerCase())
+                )
+                .slice(0, 100)
+            }
             onChange={handleAutocompleteChange}
             sx={{ marginBottom: "16px" }}
             renderInput={(params) => (

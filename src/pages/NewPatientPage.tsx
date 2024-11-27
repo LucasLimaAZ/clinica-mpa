@@ -22,7 +22,7 @@ import Modal from "../components/Modal/Modal";
 
 const NewPatientPage = () => {
   const [patient, setPatient] = useState<Patient>();
-  const [success, setSuccess] = useState<number>();
+  const [success, setSuccess] = useState<number | boolean>();
   const [error, setError] = useState(false);
   const [loading, setLoading] = useState(false);
   const [edit, setEdit] = useState(false);
@@ -70,7 +70,7 @@ const NewPatientPage = () => {
 
       if (edit) {
         updatePatient(patient)
-          .then((res) => setSuccess(res.patient.id))
+          .then(() => setSuccess(true))
           .catch((err) => setError(err))
           .finally(() => {
             setLoading(false);
@@ -80,7 +80,7 @@ const NewPatientPage = () => {
           });
       } else {
         createPatient(patient)
-          .then((res) => setSuccess(res.patient.id))
+          .then((res) => setSuccess(res.patient.file_number))
           .catch((err) => setError(err))
           .finally(() => {
             setLoading(false);
@@ -316,6 +316,16 @@ const NewPatientPage = () => {
               fullWidth
               label="Observações"
             />
+            {edit && (<TextField
+              slotProps={{ inputLabel: { shrink: edit ? true : undefined } }}
+              onChange={handleInputChange}
+              value={patient?.file_number}
+              type="number"
+              name="file_number"
+              variant="standard"
+              fullWidth
+              label="Número da ficha"
+            />)}
           </Box>
           {loading && (
             <Box sx={{ padding: "4%" }}>
@@ -359,8 +369,8 @@ const NewPatientPage = () => {
       <Modal
         open={!!success}
         onClose={() => setSuccess(undefined)}
-        title={`Ficha Nº ${success}`}
-        content="Paciente cadastrado com sucesso!"
+        title={edit ? "Sucesso" : `Ficha Nº ${success}`}
+        content={`Paciente ${edit ? "atualizado" : "cadastrado"} com sucesso!`}
       />
       <Modal
         open={showConfirmDelete}
