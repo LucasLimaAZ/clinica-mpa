@@ -32,7 +32,16 @@ export const destroySession = () => {
   window.location.reload();
 };
 
+export const isInvalidNegativeYear = (dateString: string | Date) => {
+  const match = dateString.toString().match(/^(-\d{4})/);
+  return match ? true : false;
+}
+
 export const formatDate = (dateString: string | Date): string => {
+  if (isInvalidNegativeYear(dateString)) {
+    return "Não informado.";
+  }
+
   const date = new Date(dateString);
 
   const day = String(date.getUTCDate()).padStart(2, "0");
