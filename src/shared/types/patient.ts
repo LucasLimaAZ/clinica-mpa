@@ -19,6 +19,6 @@ export type Patient = {
 };
 
 export type Label = {
-  id: number;
+  file_number: number;
   full_name: string;
 };
