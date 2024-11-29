@@ -43,8 +43,8 @@ const LabelPdf = (props: LabelPdfProps) => (
               {props.etiquetas
                 ?.filter((_, index) => index % 2 === 0)
                 .map((etiqueta) => (
-                  <Text key={etiqueta.id} style={{ paddingVertical: "24px" }}>
-                    {etiqueta.id} - {etiqueta.full_name}
+                  <Text key={etiqueta.file_number} style={{ paddingVertical: "20px",  marginTop: "16px"}}>
+                    {etiqueta.file_number} - {etiqueta.full_name}
                   </Text>
                 ))}
             </View>
@@ -52,8 +52,8 @@ const LabelPdf = (props: LabelPdfProps) => (
               {props.etiquetas
                 ?.filter((_, index) => index % 2 !== 0)
                 .map((etiqueta) => (
-                  <Text key={etiqueta.id} style={{ paddingVertical: "24px" }}>
-                    {etiqueta.id} - {etiqueta.full_name}
+                  <Text key={etiqueta.file_number} style={{ paddingVertical: "20px",  marginTop: "16px"}}>
+                    {etiqueta.file_number} - {etiqueta.full_name}
                   </Text>
                 ))}
             </View>
