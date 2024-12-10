@@ -13,6 +13,9 @@ import { AuthError } from "../shared/types/user";
 import { useNavigate } from "react-router-dom";
 import { setLocalToken } from "../shared/helper";
 import Modal from "../components/Modal/Modal";
+import ReCAPTCHA from "react-google-recaptcha";
+
+const SITE_KEY = "6Ld2-pcqAAAAAPLRrxW232YQfrlAONmJB7ANb3mJ";
 
 const LoginPage = () => {
   const [email, setEmail] = useState<string>();
@@ -22,6 +25,7 @@ const LoginPage = () => {
   const [isResetPassModalOpen, setResetPassModalOpen] =
     useState<boolean>(false);
   const navigate = useNavigate();
+  const [captcha, setCaptcha] = useState<string | null>();
 
   const handleEmailChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setEmail(e.target.value);
@@ -92,9 +96,10 @@ const LoginPage = () => {
           variant="standard"
         />
         {isLoading && <CircularProgress sx={{ marginTop: "16px" }} />}
+        <ReCAPTCHA onChange={(value) => setCaptcha(value)} sitekey={SITE_KEY} />
         <Button
           sx={{ marginTop: "32px" }}
-          disabled={isLoading}
+          disabled={isLoading || !captcha}
           onClick={handleLogin}
           variant="contained"
         >
