@@ -24,14 +24,14 @@ const styles = StyleSheet.create({
   title: {
     textAlign: "center",
     fontWeight: "bold",
-    fontSize: 6,
+    fontSize: 8,
     marginBottom: 32,
   },
   nomeMedico: {
-    fontSize: 5,
+    fontSize: 7,
   },
   dadosMedico: {
-    fontSize: 4,
+    fontSize: 6,
     display: "flex",
   },
 });
@@ -45,44 +45,63 @@ const PrescriptionPdf = ({ prescription, special }: PdfProps) => {
   return (
     <PDFViewer width={"100%"} height={"480px"}>
       <Document>
-        <Page size="A7" style={styles.page}>
+        <Page size="A4" style={styles.page}>
           <View style={styles.section}>
             <View
               style={{
-                marginHorizontal: "auto",
                 marginTop: "20px",
-                fontSize: "8px",
-                minWidth: "100%",
+                fontSize: "10px",
+                maxWidth: "50%",
               }}
             >
-              <View style={{display: "flex", justifyContent: "space-between", flexDirection: "row", fontSize: 8}}>
+              <View
+                style={{
+                  display: "flex",
+                  justifyContent: "space-between",
+                  flexDirection: "row",
+                  fontSize: 10,
+                }}
+              >
                 <Text>{!special && prescription.patient.full_name}</Text>
                 <Text>{formatDate(prescription.date)}</Text>
               </View>
               {special ? (
-                <View style={{marginTop: "30px"}}>
-                  <Text>Solicito autorizar: {prescription.patient.full_name}</Text>
+                <View style={{ marginTop: "30px" }}>
+                  <Text>
+                    Solicito autorizar: {prescription.patient.full_name}
+                  </Text>
                   <Text>
                     comprar {prescription.amount} de {prescription.medication}
                   </Text>
                   {prescription.how_to_use && (
                     <Text>{prescription.how_to_use}</Text>
                   )}
-                </View>) : (
-                <View style={{marginTop: "50px"}}>
-                  <View style={{display: "flex", flexDirection: "row", justifyContent: "space-between"}}>
-                    <Text>
-                      {prescription.medication}
-                    </Text>
-                    <Text>
-                      {prescription.amount}
-                    </Text>
+                </View>
+              ) : (
+                <View style={{ marginTop: "50px" }}>
+                  <View
+                    style={{
+                      display: "flex",
+                      flexDirection: "row",
+                      justifyContent: "space-between",
+                    }}
+                  >
+                    <Text>{prescription.medication}</Text>
+                    <Text>{prescription.amount}</Text>
                   </View>
                   {prescription.how_to_use && (
                     <Text>{prescription.how_to_use}</Text>
                   )}
-                </View>)}
-                <Image src={RiscoImg} style={{width: "70px", marginHorizontal: "auto", marginTop: "32px"}} />
+                </View>
+              )}
+              <Image
+                src={RiscoImg}
+                style={{
+                  width: "70px",
+                  marginHorizontal: "auto",
+                  marginTop: "32px",
+                }}
+              />
             </View>
           </View>
         </Page>
