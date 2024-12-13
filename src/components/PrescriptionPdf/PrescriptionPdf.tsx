@@ -24,14 +24,14 @@ const styles = StyleSheet.create({
   title: {
     textAlign: "center",
     fontWeight: "bold",
-    fontSize: 8,
+    fontSize: 9,
     marginBottom: 32,
   },
   nomeMedico: {
-    fontSize: 7,
+    fontSize: 8,
   },
   dadosMedico: {
-    fontSize: 6,
+    fontSize: 7,
     display: "flex",
   },
 });
@@ -49,7 +49,8 @@ const PrescriptionPdf = ({ prescription, special }: PdfProps) => {
           <View style={styles.section}>
             <View
               style={{
-                marginTop: "20px",
+                marginTop: "80px",
+                marginLeft: "80px",
                 fontSize: "10px",
                 maxWidth: "50%",
               }}
@@ -59,7 +60,7 @@ const PrescriptionPdf = ({ prescription, special }: PdfProps) => {
                   display: "flex",
                   justifyContent: "space-between",
                   flexDirection: "row",
-                  fontSize: 10,
+                  fontSize: 12,
                 }}
               >
                 <Text>{!special && prescription.patient.full_name}</Text>

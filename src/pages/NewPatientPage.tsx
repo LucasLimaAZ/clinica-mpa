@@ -110,9 +110,30 @@ const NewPatientPage = () => {
   return (
     <Box sx={{ display: "flex", justifyContent: "center" }}>
       <Paper sx={{ width: { lg: "50%", xs: "100%" } }}>
-        <Typography sx={{ padding: "4%" }} variant="h4">
-          {edit ? "Editar" : "Cadastrar novo"} paciente
-        </Typography>
+        <Box
+          sx={{
+            display: "flex",
+            justifyContent: "space-between",
+            alignItems: "center",
+            padding: "4%",
+          }}
+        >
+          <Typography variant="h4">
+            {edit ? "Editar" : "Cadastrar novo"} paciente
+          </Typography>
+          <Box>
+            {edit && (
+              <Button
+                disabled={loading}
+                onClick={() => setShowConfirmDelete(true)}
+                variant="contained"
+                color="error"
+              >
+                Excluir
+              </Button>
+            )}
+          </Box>
+        </Box>
         <Divider />
         <Box>
           <Box
@@ -316,16 +337,18 @@ const NewPatientPage = () => {
               fullWidth
               label="Observações"
             />
-            {edit && (<TextField
-              slotProps={{ inputLabel: { shrink: edit ? true : undefined } }}
-              onChange={handleInputChange}
-              value={patient?.file_number}
-              type="number"
-              name="file_number"
-              variant="standard"
-              fullWidth
-              label="Número da ficha"
-            />)}
+            {edit && (
+              <TextField
+                slotProps={{ inputLabel: { shrink: edit ? true : undefined } }}
+                onChange={handleInputChange}
+                value={patient?.file_number}
+                type="number"
+                name="file_number"
+                variant="standard"
+                fullWidth
+                label="Número da ficha"
+              />
+            )}
           </Box>
           {loading && (
             <Box sx={{ padding: "4%" }}>
@@ -346,16 +369,6 @@ const NewPatientPage = () => {
             >
               Salvar
             </Button>
-            {edit && (
-              <Button
-                disabled={loading}
-                onClick={() => setShowConfirmDelete(true)}
-                variant="contained"
-                color="error"
-              >
-                Excluir
-              </Button>
-            )}
           </Box>
           {error && (
             <Box sx={{ paddingBottom: "32px", paddingX: "4%" }}>

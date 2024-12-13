@@ -10,22 +10,26 @@ import { Label } from "../../shared/types/patient";
 
 const styles = StyleSheet.create({
   page: {
-    flexDirection: "row",
-    width: "100%",
-  },
-  section: {
-    margin: 20,
-    padding: 20,
-    flexGrow: 1,
-    fontSize: 14,
+    flexDirection: "column",
+    paddingHorizontal: 10,
+    paddingVertical: 5,
+    backgroundColor: "#fff",
   },
   row: {
     flexDirection: "row",
-    justifyContent: "space-between",
+    height: "25.4mm",
+    marginBottom: 0,
   },
   column: {
-    flex: 1,
-    paddingHorizontal: "10px",
+    width: "101.6mm",
+    justifyContent: "center",
+    alignItems: "center",
+    border: "1px solid #fff",
+  },
+  label: {
+    fontSize: 10,
+    textAlign: "center",
+    paddingHorizontal: 5,
   },
 });
 
@@ -33,35 +37,31 @@ type LabelPdfProps = {
   etiquetas: Label[];
 };
 
-const LabelPdf = (props: LabelPdfProps) => (
-  <PDFViewer width={"100%"} height={"480px"}>
-    <Document>
-      <Page size="A4" style={styles.page}>
-        <View style={styles.section}>
-          <View style={styles.row}>
-            <View style={styles.column}>
-              {props.etiquetas
-                ?.filter((_, index) => index % 2 === 0)
-                .map((etiqueta) => (
-                  <Text key={etiqueta.file_number} style={{ paddingVertical: "20px",  marginTop: "16px"}}>
+const LabelPdf = (props: LabelPdfProps) => {
+  const etiquetasDivididas = [];
+  for (let i = 0; i < props.etiquetas.length; i += 2) {
+    etiquetasDivididas.push(props.etiquetas.slice(i, i + 2));
+  }
+
+  return (
+    <PDFViewer width={"100%"} height={"480px"}>
+      <Document>
+        <Page size="LETTER" style={styles.page}>
+          {etiquetasDivididas.map((linha, rowIndex) => (
+            <View style={styles.row} key={`row-${rowIndex}`}>
+              {linha.map((etiqueta, colIndex) => (
+                <View style={styles.column} key={`col-${rowIndex}-${colIndex}`}>
+                  <Text style={styles.label}>
                     {etiqueta.file_number} - {etiqueta.full_name}
                   </Text>
-                ))}
+                </View>
+              ))}
             </View>
-            <View style={styles.column}>
-              {props.etiquetas
-                ?.filter((_, index) => index % 2 !== 0)
-                .map((etiqueta) => (
-                  <Text key={etiqueta.file_number} style={{ paddingVertical: "20px",  marginTop: "16px"}}>
-                    {etiqueta.file_number} - {etiqueta.full_name}
-                  </Text>
-                ))}
-            </View>
-          </View>
-        </View>
-      </Page>
-    </Document>
-  </PDFViewer>
-);
+          ))}
+        </Page>
+      </Document>
+    </PDFViewer>
+  );
+};
 
 export default LabelPdf;
