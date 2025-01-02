@@ -29,34 +29,6 @@ import { formatDate } from "../shared/helper";
 
 const PrescriptionsPage = () => {
   const columns: GridColDef<Prescription[][number]>[] = [
-    { field: "id", headerName: "Número", width: 75 },
-    {
-      field: "date",
-      headerName: "Data",
-      width: 100,
-      valueGetter: (_, row) => formatDate(row?.date),
-    },
-    {
-      field: "medication",
-      headerName: "Remédio",
-      width: 200,
-    },
-    {
-      field: "amount",
-      headerName: "Quantidade",
-      width: 150,
-    },
-    {
-      field: "how_to_use",
-      headerName: "Modo de uso",
-      width: 150,
-    },
-    {
-      field: "patient_fullname",
-      headerName: "Paciente",
-      width: 100,
-      valueGetter: (_, row) => row?.patient?.full_name,
-    },
     {
       field: "delete",
       headerName: "Excluir",
@@ -102,6 +74,34 @@ const PrescriptionsPage = () => {
         />,
       ],
     },
+    {
+      field: "date",
+      headerName: "Data",
+      width: 100,
+      valueGetter: (_, row) => formatDate(row?.date),
+    },
+    {
+      field: "medication",
+      headerName: "Remédio",
+      width: 200,
+    },
+    {
+      field: "amount",
+      headerName: "Quantidade",
+      width: 150,
+    },
+    {
+      field: "how_to_use",
+      headerName: "Modo de uso",
+      width: 150,
+    },
+    {
+      field: "patient_fullname",
+      headerName: "Paciente",
+      width: 100,
+      valueGetter: (_, row) => row?.patient?.full_name,
+    },
+    { field: "id", headerName: "Número", width: 75 },
   ];
 
   const [prescriptions, setPrescriptions] = useState<Prescription[]>();
