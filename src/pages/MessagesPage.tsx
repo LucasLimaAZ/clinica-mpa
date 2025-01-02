@@ -26,6 +26,19 @@ import { formatDate } from "../shared/helper";
 const MessagesPage = () => {
   const columns: GridColDef<Message[][number]>[] = [
     {
+      field: "actions",
+      headerName: "Excluir",
+      type: "actions",
+      width: 70,
+      getActions: (params) => [
+        <GridActionsCellItem
+          icon={<Delete color="error" />}
+          label="Excluir"
+          onClick={() => handleDelete(params.id)}
+        />,
+      ],
+    },
+    {
       field: "file_number",
       headerName: "Ficha Nº",
       width: 80,
@@ -71,19 +84,6 @@ const MessagesPage = () => {
       field: "message",
       headerName: "Recado",
       width: 250,
-    },
-    {
-      field: "actions",
-      headerName: "Excluir",
-      type: "actions",
-      width: 70,
-      getActions: (params) => [
-        <GridActionsCellItem
-          icon={<Delete color="error" />}
-          label="Excluir"
-          onClick={() => handleDelete(params.id)}
-        />,
-      ],
     },
   ];
 
