@@ -74,6 +74,7 @@ const PrescriptionPdf = ({ prescription, special }: PdfProps) => {
                   <Text>
                     comprar {prescription.amount} de {prescription.medication}
                   </Text>
+                  <Text>em função de CID 10 F90.0</Text>
                   {prescription.how_to_use && (
                     <Text>{prescription.how_to_use}</Text>
                   )}
